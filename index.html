@@ -60,12 +60,13 @@
     .arrow{width:22px;height:22px;margin-top:4px;stroke:currentColor;stroke-width:1.5;fill:none;transition:transform .15s ease}
     .tutorial:hover .arrow{transform:translate(2px,-2px)}
     .tutorial:hover .tutorial-title{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
-    .closing-quote{margin:34px 0 0;padding-left:20px;border-left:2px solid var(--blue);max-width:650px}
-    .closing-quote blockquote{margin:0;font-size:17px;line-height:1.75;letter-spacing:-.01em;color:var(--muted)}
-    .closing-quote p{margin:0}
-    .closing-quote figcaption{margin-top:10px;font-size:12px;color:var(--accent)}
-    .closing-quote figcaption a{text-decoration:none}
-    .closing-quote figcaption a:hover{text-decoration:underline}
+    .personal-belief{margin:32px 0 0;padding-left:20px;border-left:2px solid var(--blue);max-width:650px}
+    .personal-belief blockquote{margin:0;font-size:17px;line-height:1.75;letter-spacing:-.01em;color:var(--muted)}
+    .personal-belief p{margin:0}
+    .personal-belief .belief-label{margin-bottom:10px;font-size:12px;font-weight:550;color:var(--accent)}
+    .personal-belief figcaption{margin-top:10px;font-size:12px;color:var(--accent)}
+    .personal-belief figcaption a{text-decoration:none}
+    .personal-belief figcaption a:hover{text-decoration:underline}
     footer{margin-top:52px;padding:22px 0 30px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
     footer a{text-decoration:none}
     footer a:hover{text-decoration:underline}
@@ -102,24 +103,25 @@
           <a href="https://github.com/Sazabi06">GitHub</a>
           <a href="https://www.linkedin.com/in/weibo-gao-b2baba16b/">LinkedIn</a>
         </nav>
+        <figure class="personal-belief" aria-labelledby="belief-title">
+          <p class="belief-label" id="belief-title"><span data-l="en">A belief I share</span><span data-l="zh" lang="zh-CN">我认同的理念</span></p>
+          <blockquote cite="https://x.com/yukez/status/1966166595157323948">
+            <p data-l="en">“People who are really serious about robot learning should make their own robot hardware.”</p>
+            <p data-l="zh" lang="zh-CN">“真正认真对待机器人学习的人，应该亲手打造自己的机器人硬件。”</p>
+          </blockquote>
+          <figcaption>— <a href="https://x.com/yukez/status/1966166595157323948">Yuke Zhu</a></figcaption>
+        </figure>
       </section>
       <section class="writing" aria-labelledby="writing-title">
         <h2 id="writing-title"><span data-l="en">Notes &amp; tutorials</span><span data-l="zh" lang="zh-CN">笔记与教程</span></h2>
         <a class="tutorial" id="tutorial-link" href="https://sazabi06.github.io/Interactive-Tutorial-PID-to-RL-for-Robot-Control/?lang=en">
           <span>
-            <span class="tutorial-title"><span data-l="en">From PID to Reinforcement Learning</span><span data-l="zh" lang="zh-CN">从 PID 到强化学习</span></span>
+            <span class="tutorial-title"><span data-l="en">Robotic Control: from PID to RL</span><span data-l="zh" lang="zh-CN">机器人控制：从 PID 到 RL</span></span>
             <span class="tutorial-description"><span data-l="en">Robot control, explained from first principles.<br>Eight families of methods, with hands-on interactive experiments.</span><span data-l="zh" lang="zh-CN">从第一性原理理解机器人控制。<br>八类方法，配合可以动手的交互实验。</span></span>
           </span>
           <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>
         </a>
       </section>
-      <figure class="closing-quote">
-        <blockquote cite="https://x.com/yukez/status/1966166595157323948">
-          <p data-l="en">“People who are really serious about robot learning should make their own robot hardware.”</p>
-          <p data-l="zh" lang="zh-CN">“真正认真对待机器人学习的人，应该亲手打造自己的机器人硬件。”</p>
-        </blockquote>
-        <figcaption>— <a href="https://x.com/yukez/status/1966166595157323948">Yuke Zhu</a></figcaption>
-      </figure>
     </main>
     <footer>
       <span>© 2026 Weibo Gao</span>
