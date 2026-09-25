@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#fafaf8">
+  <meta name="author" content="Weibo Gao">
+  <meta name="description" content="Weibo Gao is a Ph.D. student in Mechanical Engineering at NC State University, working on robot learning, model-based control, and hardware.">
+  <meta property="og:title" content="Weibo Gao — Robotics">
+  <meta property="og:description" content="Ph.D. student in Mechanical Engineering at NC State University. Robotics, control, and interactive tutorials.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sazabi06.github.io/">
+  <link rel="canonical" href="https://sazabi06.github.io/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2358655c'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial,sans-serif' font-size='25' font-weight='600' fill='white'%3EWG%3C/text%3E%3C/svg%3E">
+  <title>Weibo Gao — Robotics</title>
+  <script>
+    (function () {
+      var lang = 'en';
+      try { lang = localStorage.getItem('weibo-home-lang') || lang; } catch (_) {}
+      var query = new URLSearchParams(location.search).get('lang');
+      if (query === 'en' || query === 'zh') lang = query;
+      if (lang !== 'zh') lang = 'en';
+      document.documentElement.dataset.lang = lang;
+      document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+    })();
+  </script>
+  <style>
+    :root{--paper:#fafaf8;--ink:#222622;--muted:#656b65;--line:#dddfd9;--accent:#52665b;--hover:#eef0eb}
+    *{box-sizing:border-box}
+    html{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,"PingFang SC","Microsoft YaHei",sans-serif;-webkit-text-size-adjust:100%}
+    body{margin:0;font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased}
+    [hidden],html[data-lang="en"] [data-l="zh"],html[data-lang="zh"] [data-l="en"]{display:none!important}
+    a{color:inherit;text-decoration-thickness:1px;text-underline-offset:5px}
+    a:hover{color:var(--accent)}
+    a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:6px;border-radius:2px}
+    button{font:inherit;color:inherit}
+    .shell{width:min(100% - 64px,800px);margin-inline:auto}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding-block:30px}
+    .monogram{font-size:16px;font-weight:650;letter-spacing:-.06em;text-decoration:none;color:var(--accent)}
+    .languages{display:flex;align-items:center;gap:6px}
+    .languages button{border:0;background:none;min-height:44px;padding:8px 9px;cursor:pointer;font-size:13px;color:var(--muted)}
+    .languages button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:6px}
+    .languages span{color:#b2b7b0;font-size:12px}
+    main{padding-top:60px}
+    .eyebrow{margin:0 0 14px;color:var(--accent);font-size:13px;font-weight:550;letter-spacing:.11em;text-transform:uppercase}
+    h1{font-size:clamp(48px,7vw,68px);font-weight:600;line-height:1.12;letter-spacing:-.055em;margin:0 0 22px}
+    .affiliation{font-size:19px;line-height:1.6;letter-spacing:-.015em;margin:0;color:var(--muted)}
+    .affiliation a{text-decoration:none;color:var(--ink)}
+    .affiliation a:hover{text-decoration:underline}
+    .bio{margin-top:32px;max-width:650px;font-size:18px;line-height:1.8;letter-spacing:-.012em}
+    .bio p{margin:0}
+    .links{display:flex;flex-wrap:wrap;align-items:center;gap:12px 26px;margin-top:24px;font-size:14px}
+    .links a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent);text-decoration-color:#bdc6bc}
+    .writing{margin-top:62px;border-top:1px solid var(--line);padding-top:29px}
+    h2{font-size:13px;font-weight:550;letter-spacing:.025em;margin:0 0 20px;color:var(--muted)}
+    .tutorial{display:grid;grid-template-columns:1fr 28px;gap:20px;padding:0 0 25px;text-decoration:none}
+    .tutorial-title{display:block;font-size:22px;font-weight:550;letter-spacing:-.025em;line-height:1.4;margin-bottom:8px}
+    .tutorial-description{display:block;max-width:650px;color:var(--muted);font-size:15px;line-height:1.7}
+    .arrow{width:22px;height:22px;margin-top:4px;stroke:currentColor;stroke-width:1.5;fill:none;transition:transform .15s ease}
+    .tutorial:hover .arrow{transform:translate(2px,-2px)}
+    .tutorial:hover .tutorial-title{text-decoration:underline;text-underline-offset:5px;text-decoration-thickness:1px}
+    footer{margin-top:52px;padding:22px 0 30px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+    footer a{text-decoration:none}
+    footer a:hover{text-decoration:underline}
+    .skip-link{position:absolute;top:-100px;left:24px;background:var(--paper);padding:10px;z-index:2}
+    .skip-link:focus{top:10px}
+    html[data-lang="zh"] .bio{letter-spacing:0;line-height:1.9}
+    @media(max-width:600px){.shell{width:calc(100% - 44px)}.topbar{padding-block:18px}main{padding-top:44px}h1{font-size:50px}.affiliation{font-size:17px}.bio{margin-top:26px;font-size:17px}.links{gap:8px 22px;margin-top:18px}.writing{margin-top:42px;padding-top:25px}.tutorial-title{font-size:21px}.tutorial{gap:12px}.tutorial-description{font-size:14px}footer{margin-top:32px}}
+    @media(prefers-reduced-motion:reduce){.arrow{transition:none}}
+    @media print{.languages,.skip-link{display:none!important}.shell{width:100%;max-width:none}.topbar{padding-top:0}main{padding-top:20px}.writing{margin-top:32px}footer{margin-top:28px}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main"><span data-l="en">Skip to content</span><span data-l="zh" lang="zh-CN">跳到正文</span></a>
+  <div class="shell">
+    <header class="topbar">
+      <a class="monogram" href="https://sazabi06.github.io/" aria-label="Weibo Gao home">WG</a>
+      <nav class="languages" id="languages" aria-label="Language / 语言" hidden>
+        <button type="button" data-set-lang="en" lang="en" aria-pressed="true">English</button>
+        <span aria-hidden="true">/</span>
+        <button type="button" data-set-lang="zh" lang="zh-CN" aria-pressed="false">中文</button>
+      </nav>
+    </header>
+    <main id="main">
+      <section aria-labelledby="name">
+        <p class="eyebrow"><span data-l="en">Robotics</span><span data-l="zh" lang="zh-CN">机器人</span></p>
+        <h1 id="name">Weibo Gao</h1>
+        <p class="affiliation"><span data-l="en">Ph.D. student · Mechanical Engineering</span><span data-l="zh" lang="zh-CN">机械工程博士在读</span><br><a href="https://www.ncsu.edu/"><span data-l="en">NC State University</span><span data-l="zh" lang="zh-CN">北卡罗来纳州立大学</span></a></p>
+        <div class="bio">
+          <p data-l="en">I work on robot learning, model-based control, and hardware, with experience in medical and wearable robotics.</p>
+          <p data-l="zh" lang="zh-CN">我的工作涉及机器人学习、基于模型的控制与硬件设计，并有医疗与可穿戴机器人方面的研究经验。</p>
+        </div>
+        <nav class="links" aria-label="Contact and profiles / 联系方式">
+          <a href="mailto:wgao22@ncsu.edu">wgao22@ncsu.edu</a>
+          <a href="https://github.com/Sazabi06">GitHub</a>
+          <a href="https://www.linkedin.com/in/weibo-gao-b2baba16b/">LinkedIn</a>
+        </nav>
+      </section>
+      <section class="writing" aria-labelledby="writing-title">
+        <h2 id="writing-title"><span data-l="en">Notes &amp; tutorials</span><span data-l="zh" lang="zh-CN">笔记与教程</span></h2>
+        <a class="tutorial" id="tutorial-link" href="https://sazabi06.github.io/Interactive-Tutorial-PID-to-RL-for-Robot-Control/?lang=en">
+          <span>
+            <span class="tutorial-title"><span data-l="en">From PID to Reinforcement Learning</span><span data-l="zh" lang="zh-CN">从 PID 到强化学习</span></span>
+            <span class="tutorial-description"><span data-l="en">Robot control, explained from first principles.<br>Eight families of methods, with hands-on interactive experiments.</span><span data-l="zh" lang="zh-CN">从第一性原理理解机器人控制。<br>八类方法，配合可以动手的交互实验。</span></span>
+          </span>
+          <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>
+        </a>
+      </section>
+    </main>
+    <footer>
+      <span>© 2026 Weibo Gao</span>
+      <a href="https://github.com/Sazabi06/Sazabi06.github.io/blob/master/COPYRIGHT.md"><span data-l="en">All rights reserved.</span><span data-l="zh" lang="zh-CN">保留所有权利。</span></a>
+    </footer>
+  </div>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var buttons = document.querySelectorAll('[data-set-lang]');
+      var tutorial = document.getElementById('tutorial-link');
+      function setLanguage(lang, persist) {
+        root.dataset.lang = lang;
+        root.lang = lang === 'zh' ? 'zh-CN' : 'en';
+        document.title = lang === 'zh' ? 'Weibo Gao · 机器人' : 'Weibo Gao — Robotics';
+        buttons.forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.setLang === lang)); });
+        tutorial.href = 'https://sazabi06.github.io/Interactive-Tutorial-PID-to-RL-for-Robot-Control/?lang=' + lang;
+        if (persist) {
+          try { localStorage.setItem('weibo-home-lang', lang); } catch (_) {}
+          var url = new URL(location.href);
+          url.searchParams.set('lang', lang);
+          history.replaceState(null, '', url);
+        }
+      }
+      buttons.forEach(function (button) { button.addEventListener('click', function () { setLanguage(button.dataset.setLang, true); }); });
+      document.getElementById('languages').hidden = false;
+      setLanguage(root.dataset.lang, false);
+    })();
+  </script>
+</body>
+</html>
