@@ -121,7 +121,7 @@
           </span>
           <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>
         </a>
-        <a class="tutorial" href="https://sazabi06.github.io/catheter-length/">
+        <a class="tutorial" id="tutorial-link-2" href="https://sazabi06.github.io/catheter-length/?lang=en">
           <span>
             <span class="tutorial-title"><span data-l="en">How to calculate the needed catheter/guidewire length for your endovascular robot?</span><span data-l="zh" lang="zh-CN">如何计算血管介入机器人所需的导管/导丝长度？</span></span>
             <span class="tutorial-description"><span data-l="en">A length budget for every catheter and guidewire a robot holds.<br>Interactive calculator, with a 3D view of where working length is lost.</span><span data-l="zh" lang="zh-CN">为机器人夹持的每根导管和导丝算清长度账。<br>交互式计算器，配 3D 视图展示工作长度在哪里损失。</span></span>
@@ -146,6 +146,7 @@
         document.title = lang === 'zh' ? 'Weibo Gao · 机器人' : 'Weibo Gao — Robotics';
         buttons.forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.setLang === lang)); });
         tutorial.href = 'https://sazabi06.github.io/Interactive-Tutorial-PID-to-RL-for-Robot-Control/?lang=' + lang;
+        document.getElementById('tutorial-link-2').href = 'https://sazabi06.github.io/catheter-length/?lang=' + lang;
         if (persist) {
           try { localStorage.setItem('weibo-home-lang', lang); } catch (_) {}
           var url = new URL(location.href);

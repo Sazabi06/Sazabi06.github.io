@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8">
 <title>How to calculate the needed catheter/guidewire length for your endovascular robot?</title>
+<script>window.LWP_TITLES = {"en": "How to calculate the needed catheter/guidewire length for your endovascular robot?", "zh": "如何计算血管介入机器人所需的导管/导丝长度？"};</script>
 <meta name="description" content="Work out how long each catheter and guidewire must be when an endovascular robot holds part of it: robot length loss, slack of outer catheters and target depth, with an interactive calculator and a 3D view.">
 <meta name="author" content="Weibo Gao">
 <style>
@@ -37,6 +38,11 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html:not([data-lang="zh"]) [data-l="zh"],html[data-lang="zh"] [data-l="en"]{display:none!important}
+.langs{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--muted)}
+.langs button{border:0;background:none;font:inherit;color:var(--muted);padding:6px 6px;cursor:pointer;min-height:36px}
+.langs button[aria-pressed="true"]{color:var(--ink);text-decoration:underline;text-underline-offset:5px}
+html[data-lang="zh"] body{line-height:1.65}
 body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14px;line-height:1.5;margin:0}
 .wrap{max-width:1320px;margin:0 auto;padding-inline:16px;padding-block:28px 64px;display:flex;flex-direction:column;gap:28px}
 h1,h2,h3{font-family:var(--font-display);font-weight:600;text-wrap:balance;margin:0;letter-spacing:.005em}
@@ -48,6 +54,7 @@ a{color:var(--accent)}
 .mono,.num{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
 .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
 header.top{display:flex;flex-direction:column;gap:10px;max-width:80ch}
+.toprow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
 header.top .formula{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;align-self:flex-start;max-width:100%;overflow-x:auto;white-space:nowrap}
 .lede{color:var(--muted);max-width:75ch}
 
@@ -188,89 +195,125 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
 /* Note styling: matches sazabi06.github.io (Helvetica, #fafafa paper, slate accent). */
 [hidden]{display:none!important}
-.note-top{display:flex;flex-direction:column;gap:12px;max-width:760px}
-.note-top .topbar{display:flex;align-items:center;justify-content:space-between;padding-block:4px 18px}
+.note-top{display:flex;flex-direction:column;gap:28px}
+.note-top .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .note-top .monogram{font-size:16px;font-weight:700;letter-spacing:-.06em;text-decoration:none;color:var(--accent)}
+.note-top .topright{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .note-top .back{font-size:13px;color:var(--muted);text-decoration:none}
 .note-top .back:hover{color:var(--accent);text-decoration:underline;text-underline-offset:5px}
+.note-head{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px 56px;align-items:start;padding-bottom:8px;border-bottom:1px solid var(--line)}
+@media (max-width:960px){.note-head{grid-template-columns:minmax(0,1fr)}}
+.note-titleblock{display:flex;flex-direction:column;gap:12px}
 .eyebrow{margin:0;color:var(--accent);font-size:13px;font-weight:600;letter-spacing:.11em;text-transform:uppercase}
-.note-title{font-size:clamp(30px,4.4vw,44px);font-weight:700;line-height:1.15;letter-spacing:-.03em}
+html[data-lang="zh"] .eyebrow{letter-spacing:.04em}
+.note-title{font-size:clamp(30px,3.6vw,44px);font-weight:700;line-height:1.15;letter-spacing:-.03em}
+html[data-lang="zh"] .note-title{letter-spacing:0;line-height:1.3}
 .byline{color:var(--muted);font-size:14px}
-.intro{display:flex;flex-direction:column;gap:14px;font-size:17px;line-height:1.75;max-width:68ch;margin-top:6px}
+.intro{display:flex;flex-direction:column;gap:14px;font-size:16.5px;line-height:1.75;max-width:72ch;padding-bottom:20px}
+html[data-lang="zh"] .intro{line-height:1.9}
 .intro p{margin:0}
-.note-top .formula{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;align-self:flex-start;max-width:100%;overflow-x:auto;white-space:nowrap;margin-top:6px}
+.note-top .formula{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;align-self:flex-start;max-width:100%;overflow-x:auto;white-space:nowrap;margin-top:4px}
 </style>
 </head>
 <body>
 
 
+<script>
+/* Language: ?lang= wins, then the choice saved by the homepage, then English. */
+(function(){
+  var d = document.documentElement, l = "en", fns = [];
+  try{ l = localStorage.getItem("weibo-home-lang") || l; }catch(e){}
+  try{ var m = /[?&]lang=(zh|en)\b/.exec(location.search); if(m) l = m[1]; }catch(e){}
+  window.LWP_TITLES = window.LWP_TITLES || {en:"LegoBot Work-Length Planner", zh:"LegoBot 工作长度计算器"};
+  function apply(l){
+    if(l !== "zh") l = "en";
+    d.setAttribute("data-lang", l); d.setAttribute("lang", l === "zh" ? "zh-CN" : "en");
+    document.title = window.LWP_TITLES[l];
+    return l;
+  }
+  apply(l);
+  window.LWPI18N = {
+    lang: function(){ return d.getAttribute("data-lang") === "zh" ? "zh" : "en"; },
+    T: function(en, zh){ return (d.getAttribute("data-lang") === "zh" && zh != null) ? zh : en; },
+    on: function(fn){ fns.push(fn); },
+    set: function(l){
+      l = apply(l);
+      try{ localStorage.setItem("weibo-home-lang", l); }catch(e){}
+      try{ var u = new URL(location.href); u.searchParams.set("lang", l); history.replaceState(null, "", u); }catch(e){}
+      fns.forEach(function(f){ try{ f(l); }catch(e){} });
+    }
+  };
+})();
+</script>
 <div class="wrap">
   <header class="note-top">
     <nav class="topbar" aria-label="Site">
-      <a class="monogram" href="https://sazabi06.github.io/" aria-label="Weibo Gao home">WG</a>
-      <a class="back" href="https://sazabi06.github.io/#writing-title">Notes &amp; tutorials</a>
+      <a class="monogram" id="home-link" href="https://sazabi06.github.io/" aria-label="Weibo Gao home">WG</a>
+      <div class="topright"><a class="back" id="notes-link" href="https://sazabi06.github.io/#writing-title"><span data-l="en">Notes &amp; tutorials</span><span data-l="zh" lang="zh-CN">笔记与教程</span></a><div class="langs" role="group" aria-label="Language / 语言"><button type="button" data-set-lang="en" lang="en">English</button><span aria-hidden="true">/</span><button type="button" data-set-lang="zh" lang="zh-CN">中文</button></div></div>
     </nav>
-    <p class="eyebrow">Note · Endovascular robotics</p>
-    <h1 class="note-title">How to calculate the needed catheter/guidewire length for your endovascular robot?</h1>
-    <p class="byline">Weibo Gao · October 2026</p>
-    <div class="intro">
-      <p>An endovascular robot that grips catheters and guidewires outside the patient has a hidden cost. Every centimetre of an instrument held inside the robot can never enter the patient. Neurovascular devices are sized for hand use, with only about 5–15 cm to spare at the proximal end, so this loss often decides whether an instrument reaches its target at all.</p>
-      <p>With coaxial instruments in a modular robot such as our LegoBot, the loss compounds. The instrument gripped by the <i>k</i>-th module from the patient passes through <i>k</i> modules and the <i>k</i>−1 gaps between them. If an outer catheter is longer than it needs to be, its extra length is passed on to every instrument inside it. With 19 cm modules and 12 cm gaps, a 132 cm aspiration catheter driven by the second module reaches only the carotid bifurcation, not the MCA.</p>
-      <p>Checking a device set by hand means tracking, for every instrument, the length left inside the robot, the slack inherited from outer layers, where its tip must end up, and the vessel path length from the access site to that point. This page does that bookkeeping. Set your robot's geometry, access route and device stack, and it reports each instrument's required length, its margin and the deepest landmark it can reach. LegoBot (Gao et al., IEEE/ASME T-MECH 2026) is the worked example; for other proximally driven robots, including cassette-based systems, set the module length and gap to match your drive.</p>
+    <div class="note-head">
+      <div class="note-titleblock">
+        <p class="eyebrow"><span data-l="en">Note · Endovascular robotics</span><span data-l="zh" lang="zh-CN">笔记 · 血管介入机器人</span></p>
+        <h1 class="note-title"><span data-l="en">How to calculate the needed catheter/guidewire length for your endovascular robot?</span><span data-l="zh" lang="zh-CN">如何计算血管介入机器人所需的导管/导丝长度？</span></h1>
+        <p class="byline"><span data-l="en">Weibo Gao · October 2026</span><span data-l="zh" lang="zh-CN">Weibo Gao · 2026 年 10 月</span></p>
+      </div>
+      <div class="intro">
+        <p><span data-l="en">An endovascular robot that grips catheters and guidewires outside the patient has a hidden cost. Every centimetre of an instrument held inside the robot can never enter the patient. Neurovascular devices are sized for hand use, with only about 5–15 cm to spare at the proximal end, so this loss often decides whether an instrument reaches its target at all.</span><span data-l="zh" lang="zh-CN">血管介入机器人在患者体外夹持导管和导丝。器械留在机器人里的那一段，永远进不了患者体内。神经介入器械的长度是按手工操作设计的，近端通常只富余 5–15 cm，所以这段损失常常决定了器械能不能到达目标。</span></p><p><span data-l="en">With coaxial instruments in a modular robot such as our LegoBot, the loss compounds. The instrument gripped by the <i>k</i>-th module from the patient passes through <i>k</i> modules and the <i>k</i>−1 gaps between them. If an outer catheter is longer than it needs to be, its extra length is passed on to every instrument inside it. With 19 cm modules and 12 cm gaps, a 132 cm aspiration catheter driven by the second module reaches only the carotid bifurcation, not the MCA.</span><span data-l="zh" lang="zh-CN">在 LegoBot 这样的模块化机器人里，器械一根套一根，损失会逐层累加。从患者一侧数，第 <i>k</i> 个模块夹持的器械要穿过 <i>k</i> 个模块，以及它们之间的 <i>k</i>−1 段间隙。外层导管如果比需要的长，多出来的长度还会转给套在里面的每一根器械。按每个模块 19 cm、间隙 12 cm 算，由第二个模块驱动的 132 cm 抽吸导管只能到颈动脉分叉，到不了大脑中动脉。</span></p><p><span data-l="en">Checking a device set by hand means tracking, for every instrument, the length left inside the robot, the slack inherited from outer layers, where its tip must end up, and the vessel path length from the access site to that point. This page does that bookkeeping. Set your robot's geometry, access route and device stack, and it reports each instrument's required length, its margin and the deepest landmark it can reach. LegoBot (Gao et al., IEEE/ASME T-MECH 2026) is the worked example; for other proximally driven robots, including cassette-based systems, set the module length and gap to match your drive.</span><span data-l="zh" lang="zh-CN">手工核算一套器械，每一根都要算清四个量：留在机器人里的长度、从外层继承的余长、头端最终停在哪里，以及从穿刺点到那里的血管路径长度。这个页面替你算这笔账。填入机器人的几何参数、入路和器械组合，页面会给出每根器械所需的长度、余量，以及它最深能到达的解剖位置。示例用的是 LegoBot（Gao 等，IEEE/ASME T-MECH 2026）。其他在近端驱动器械的机器人，包括卡盒式系统，把模块长度和间隙换成自己驱动装置的数值就可以用。</span></p>
+        <span class="formula"><span data-l="en">Required length<sub>k</sub> = depth to target + sheath hub + free span + k·L<sub>m</sub> + (k−1)·g + slack of outer catheters</span><span data-l="zh" lang="zh-CN">所需长度<sub>k</sub> = 体内深度 + 鞘 hub + 游离段 + k·L<sub>m</sub> + (k−1)·g + 外层导管余长</span></span>
+      </div>
     </div>
-    <span class="formula">Required length<sub>k</sub> = depth to target + sheath hub + free span + k·L<sub>m</sub> + (k−1)·g + slack of outer catheters</span>
   </header>
 
   <div class="main">
     <aside class="rail" aria-label="Parameters">
       <div class="group">
-        <h3>Robot geometry</h3>
-        <div class="field"><label for="p-lm">Module axial length L<sub>m</sub> (cm)<small>Instrument path inside one module</small></label><input id="p-lm" type="number" step="0.5" min="0"></div>
-        <div class="field"><label for="p-g">Gap between modules g (cm)<small>Bare, arc-shaped span from one module to the next</small></label><input id="p-g" type="number" step="0.5" min="0"></div>
-        <div class="field"><label for="p-s">Free span to sheath s (cm)<small>From the first module to the sheath hub</small></label><input id="p-s" type="number" step="0.5" min="0"></div>
-        <div class="field"><label for="p-h">Sheath hub outside skin h (cm)</label><input id="p-h" type="number" step="0.5" min="0"></div>
-        <label for="p-hub" style="font-size:13px">Where each catheter's hub sits</label>
+        <h3><span data-l="en">Robot geometry</span><span data-l="zh" lang="zh-CN">机器人几何参数</span></h3>
+        <div class="field"><label for="p-lm"><span data-l="en">Module axial length L<sub>m</sub> (cm)</span><span data-l="zh" lang="zh-CN">模块轴向长度 L<sub>m</sub> (cm)</span><small><span data-l="en">Instrument path inside one module</span><span data-l="zh" lang="zh-CN">器械在一个模块内走过的路径</span></small></label><input id="p-lm" type="number" step="0.5" min="0"></div>
+        <div class="field"><label for="p-g"><span data-l="en">Gap between modules g (cm)</span><span data-l="zh" lang="zh-CN">模块间隙 g (cm)</span><small><span data-l="en">Bare, arc-shaped span from one module to the next</span><span data-l="zh" lang="zh-CN">相邻两个模块之间裸露的弧形段</span></small></label><input id="p-g" type="number" step="0.5" min="0"></div>
+        <div class="field"><label for="p-s"><span data-l="en">Free span to sheath s (cm)</span><span data-l="zh" lang="zh-CN">到鞘的游离段 s (cm)</span><small><span data-l="en">From the first module to the sheath hub</span><span data-l="zh" lang="zh-CN">第一个模块到鞘 hub 的距离</span></small></label><input id="p-s" type="number" step="0.5" min="0"></div>
+        <div class="field"><label for="p-h"><span data-l="en">Sheath hub outside skin h (cm)</span><span data-l="zh" lang="zh-CN">鞘 hub 露在体外的长度 h (cm)</span></label><input id="p-h" type="number" step="0.5" min="0"></div>
+        <label for="p-hub" style="font-size:13px"><span data-l="en">Where each catheter's hub sits</span><span data-l="zh" lang="zh-CN">每根导管的 hub 装在哪里</span></label>
         <select id="p-hub">
-          <option value="own">At its own module's exit</option>
-          <option value="after">After the next U-turn (as in CAD)</option>
+          <option value="own" data-en="At its own module's exit" data-zh="装在本模块出口">At its own module's exit</option>
+          <option value="after" data-en="After the next U-turn (as in CAD)" data-zh="装在下一个 U-turn 之后（与 CAD 一致）">After the next U-turn (as in CAD)</option>
         </select>
-        <p class="note">The CAD option charges one extra gap g to every catheter except the innermost instrument.</p>
-        <label class="check" for="p-slack"><input type="checkbox" id="p-slack"> Count slack of longer outer catheters</label>
-        <p class="note">An outer catheter longer than it needs to be leaves extra shaft between the robot and its hub. Every instrument inside it has to travel that extra distance too.</p>
+        <p class="note"><span data-l="en">The CAD option charges one extra gap g to every catheter except the innermost instrument.</span><span data-l="zh" lang="zh-CN">选 CAD 方式时，除最内层器械外，每根导管多算一段间隙 g。</span></p>
+        <label class="check" for="p-slack"><input type="checkbox" id="p-slack"> <span data-l="en">Count slack of longer outer catheters</span><span data-l="zh" lang="zh-CN">计入外层导管的余长</span></label>
+        <p class="note"><span data-l="en">An outer catheter longer than it needs to be leaves extra shaft between the robot and its hub. Every instrument inside it has to travel that extra distance too.</span><span data-l="zh" lang="zh-CN">外层导管比需要的长时，多出的管身会留在机器人和它的 hub 之间，套在里面的每根器械都要多走这一段。</span></p>
       </div>
 
       <div class="group">
-        <h3>Access &amp; anatomy</h3>
-        <div class="field"><label for="p-access" class="full">Access route</label></div>
+        <h3><span data-l="en">Access &amp; anatomy</span><span data-l="zh" lang="zh-CN">入路与解剖</span></h3>
+        <div class="field"><label for="p-access" class="full"><span data-l="en">Access route</span><span data-l="zh" lang="zh-CN">入路</span></label></div>
         <select id="p-access">
-          <option value="femoral">Femoral, average adult</option>
-          <option value="radial">Right radial, right-sided target (rough estimate)</option>
-          <option value="custom">Custom / measured on phantom</option>
+          <option value="femoral" data-en="Femoral, average adult" data-zh="股动脉，成年人平均">Femoral, average adult</option>
+          <option value="radial" data-en="Right radial, right-sided target (rough estimate)" data-zh="右桡动脉，右侧目标（粗略估计）">Right radial, right-sided target (rough estimate)</option>
+          <option value="custom" data-en="Custom / measured on phantom" data-zh="自定义 / 模型实测">Custom / measured on phantom</option>
         </select>
-        <div class="field"><label for="p-tall">Extra depth for tall patient or Type III arch (cm)</label><input id="p-tall" type="number" step="1" min="0"></div>
+        <div class="field"><label for="p-tall"><span data-l="en">Extra depth for tall patient or Type III arch (cm)</span><span data-l="zh" lang="zh-CN">高个子或 III 型主动脉弓的额外深度 (cm)</span></label><input id="p-tall" type="number" step="1" min="0"></div>
         <details class="lm" id="lm-details">
-          <summary>Target depths from puncture (cm)</summary>
+          <summary><span data-l="en">Target depths from puncture (cm)</span><span data-l="zh" lang="zh-CN">从穿刺点到各目标的深度 (cm)</span></summary>
           <div class="lmtable" id="lm-table"></div>
-          <p class="note" style="margin-top:8px">Editing a depth switches the route to Custom. Replace these estimates with centerline lengths measured on your phantom or CTA.</p>
+          <p class="note" style="margin-top:8px"><span data-l="en">Editing a depth switches the route to Custom. Replace these estimates with centerline lengths measured on your phantom or CTA.</span><span data-l="zh" lang="zh-CN">改动任何一个深度，入路都会切换为自定义。请用模型或 CTA 上测得的中心线长度替换这些估计值。</span></p>
         </details>
       </div>
 
       <div class="group">
-        <h3>Procedure &amp; devices</h3>
+        <h3><span data-l="en">Procedure &amp; devices</span><span data-l="zh" lang="zh-CN">手术与器械</span></h3>
         <select id="p-proc" aria-label="Procedure">
-          <option value="angio">Diagnostic angiography · 2 modules</option>
-          <option value="thrombo3">MCA aspiration thrombectomy · 3 modules</option>
-          <option value="thrombo4">MCA aspiration + microcatheter · 4 modules</option>
-          <option value="coil3">MCA aneurysm coiling, no DAC · 3 modules</option>
-          <option value="coil4">MCA aneurysm coiling with DAC · 4 modules</option>
+          <option value="angio" data-en="Diagnostic angiography · 2 modules" data-zh="诊断性造影 · 2 个模块">Diagnostic angiography · 2 modules</option>
+          <option value="thrombo3" data-en="MCA aspiration thrombectomy · 3 modules" data-zh="MCA 抽吸取栓 · 3 个模块">MCA aspiration thrombectomy · 3 modules</option>
+          <option value="thrombo4" data-en="MCA aspiration + microcatheter · 4 modules" data-zh="MCA 抽吸取栓 + 微导管 · 4 个模块">MCA aspiration + microcatheter · 4 modules</option>
+          <option value="coil3" data-en="MCA aneurysm coiling, no DAC · 3 modules" data-zh="MCA 动脉瘤弹簧圈栓塞，不用 DAC · 3 个模块">MCA aneurysm coiling, no DAC · 3 modules</option>
+          <option value="coil4" data-en="MCA aneurysm coiling with DAC · 4 modules" data-zh="MCA 动脉瘤弹簧圈栓塞，用 DAC · 4 个模块">MCA aneurysm coiling with DAC · 4 modules</option>
         </select>
         <div class="seg" role="group" aria-label="Device set">
-          <button type="button" id="p-preset-std" data-preset="std">Standard neuro devices</button>
-          <button type="button" id="p-preset-lab" data-preset="lab">Selected lab set</button>
+          <button type="button" id="p-preset-std" data-preset="std" data-en="Standard neuro devices" data-zh="标准神经介入器械">Standard neuro devices</button>
+          <button type="button" id="p-preset-lab" data-preset="lab" data-en="Selected lab set" data-zh="实验室选用器械">Selected lab set</button>
         </div>
-        <p class="note">Switching the procedure or device set replaces the instrument rows. Edits you make in the table stay until you switch.</p>
+        <p class="note"><span data-l="en">Switching the procedure or device set replaces the instrument rows. Edits you make in the table stay until you switch.</span><span data-l="zh" lang="zh-CN">切换手术类型或器械组时，表里的各行会被替换。在表里做的改动会一直保留，直到下次切换。</span></p>
         <div class="btnrow">
-          <button type="button" class="btn" id="b-reset">Reset all to LegoBot defaults</button>
+          <button type="button" class="btn" id="b-reset" data-en="Reset all to LegoBot defaults" data-zh="全部恢复为 LegoBot 默认值">Reset all to LegoBot defaults</button>
         </div>
       </div>
     </aside>
@@ -280,19 +323,19 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
       <div class="panel">
         <div class="panelhead">
-          <h2>Length budget per instrument</h2>
+          <h2><span data-l="en">Length budget per instrument</span><span data-l="zh" lang="zh-CN">每根器械的长度账</span></h2>
           <div class="btnrow">
-            <button type="button" class="btn" id="b-add">Add layer</button>
-            <button type="button" class="btn" id="b-del">Remove last layer</button>
-            <button type="button" class="btn primary" id="b-copy">Copy table</button>
+            <button type="button" class="btn" id="b-add" data-en="Add layer" data-zh="添加一层">Add layer</button>
+            <button type="button" class="btn" id="b-del" data-en="Remove last layer" data-zh="删除最后一层">Remove last layer</button>
+            <button type="button" class="btn primary" id="b-copy" data-en="Copy table" data-zh="复制表格">Copy table</button>
           </div>
         </div>
-        <p class="note">k = position of the gripping module counted from the patient. Lengths in cm. Pairs read average / tall-or-Type III. Required includes slack carried from outer catheters that are longer than needed. Margin = device length − required length; green ≥ 5, amber 0–5, red &lt; 0. Pick a model from the device library to fill in its name, length and OD/ID, or type them in directly. A blank OD or ID means it was not verified. Tick "swap" for an instrument loaded into the same module after the one above is withdrawn, such as a coil pusher replacing the microwire. OD/ID in inches; the fit column checks this layer's OD against the ID of the layer outside it.</p>
+        <p class="note"><span data-l="en">k = position of the gripping module counted from the patient. Lengths in cm. Pairs read average / tall-or-Type III. Required includes slack carried from outer catheters that are longer than needed. Margin = device length − required length; green ≥ 5, amber 0–5, red &lt; 0. Pick a model from the device library to fill in its name, length and OD/ID, or type them in directly. A blank OD or ID means it was not verified. Tick "swap" for an instrument loaded into the same module after the one above is withdrawn, such as a coil pusher replacing the microwire. OD/ID in inches; the fit column checks this layer's OD against the ID of the layer outside it.</span><span data-l="zh" lang="zh-CN">k 是夹持这根器械的模块，从患者一侧数起。成对的数字依次对应平均身材和高个子或 III 型弓。所需长度已包含外层导管多出的余长。余量 = 器械长度 − 所需长度；绿色 ≥ 5，黄色 0–5，红色 &lt; 0。可以从器械库里选型号，自动填好名称、长度和 OD/ID，也可以直接输入。OD 或 ID 空着，表示没有核实过。如果一根器械要等上一行的器械撤出后才装进同一个模块（比如替换微导丝的 coil pusher），请勾选“换装”。OD/ID 的单位是英寸；“能否套入”检查本层的 OD 是否小于外面一层的 ID。</span></p>
         <div class="scroll">
           <table class="calc" id="calc">
             <thead>
               <tr>
-                <th>k</th><th>Instrument</th><th>Target</th><th class="n">Offset<span class="u">cm</span></th><th class="n">Depth<span class="u">cm</span></th><th class="n">Robot loss<span class="u">cm</span></th><th class="n">Outer slack<span class="u">cm</span></th><th class="n">Required<span class="u">cm</span></th><th class="n">Device length<span class="u">cm</span></th><th class="n">Margin<span class="u">cm</span></th><th>Reach (avg)</th><th class="n">Max L<sub>m</sub><span class="u">cm</span></th><th class="n">OD / ID<span class="u">inch</span></th><th>Fit</th>
+                <th>k</th><th><span data-l="en">Instrument</span><span data-l="zh" lang="zh-CN">器械</span></th><th><span data-l="en">Target</span><span data-l="zh" lang="zh-CN">目标</span></th><th class="n"><span data-l="en">Offset</span><span data-l="zh" lang="zh-CN">偏移</span><span class="u">cm</span></th><th class="n"><span data-l="en">Depth</span><span data-l="zh" lang="zh-CN">体内深度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Robot loss</span><span data-l="zh" lang="zh-CN">机器人内损失</span><span class="u">cm</span></th><th class="n"><span data-l="en">Outer slack</span><span data-l="zh" lang="zh-CN">外层余长</span><span class="u">cm</span></th><th class="n"><span data-l="en">Required</span><span data-l="zh" lang="zh-CN">所需长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Device length</span><span data-l="zh" lang="zh-CN">器械长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Margin</span><span data-l="zh" lang="zh-CN">余量</span><span class="u">cm</span></th><th><span data-l="en">Reach (avg)</span><span data-l="zh" lang="zh-CN">可达位置（平均）</span></th><th class="n"><span data-l="en">Max L<sub>m</sub></span><span data-l="zh" lang="zh-CN">L<sub>m</sub> 上限</span><span class="u">cm</span></th><th class="n">OD / ID<span class="u"><span data-l="en">inch</span><span data-l="zh" lang="zh-CN">英寸</span></span></th><th><span data-l="en">Fit</span><span data-l="zh" lang="zh-CN">能否套入</span></th>
               </tr>
             </thead>
             <tbody id="tbody"></tbody>
@@ -303,20 +346,20 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
       <div class="panel">
         <div class="panelhead">
-          <h2>Where each instrument's length goes</h2>
+          <h2><span data-l="en">Where each instrument's length goes</span><span data-l="zh" lang="zh-CN">每根器械的长度用在了哪里</span></h2>
           <div class="seg" role="group" aria-label="Anatomy for bars" style="min-width:230px">
-            <button type="button" id="v-avg" data-view="avg">Average</button>
-            <button type="button" id="v-tall" data-view="tall">Tall / Type III</button>
+            <button type="button" id="v-avg" data-view="avg" data-en="Average" data-zh="平均身材">Average</button>
+            <button type="button" id="v-tall" data-view="tall" data-en="Tall / Type III" data-zh="高个子 / III 型弓">Tall / Type III</button>
           </div>
         </div>
         <div class="legend">
-          <span><i style="background:var(--seg-body)"></i>Inside the patient</span>
-          <span><i style="background:var(--seg-ext)"></i>Sheath hub + free span</span>
-          <span><i style="background:var(--seg-robot)"></i>Lost inside the robot</span>
-          <span><i style="background:var(--seg-slack)"></i>Slack of longer outer catheters</span>
-          <span><i style="background:var(--seg-margin)"></i>Spare length</span>
-          <span><i style="background:repeating-linear-gradient(135deg,var(--seg-deficit) 0 4px,transparent 4px 7px);border:1px solid var(--seg-deficit)"></i>Missing length</span>
-          <span><i style="background:var(--ink);width:3px"></i>Device length</span>
+          <span><i style="background:var(--seg-body)"></i><span data-l="en">Inside the patient</span><span data-l="zh" lang="zh-CN">患者体内</span></span>
+          <span><i style="background:var(--seg-ext)"></i><span data-l="en">Sheath hub + free span</span><span data-l="zh" lang="zh-CN">鞘 hub + 游离段</span></span>
+          <span><i style="background:var(--seg-robot)"></i><span data-l="en">Lost inside the robot</span><span data-l="zh" lang="zh-CN">损失在机器人内</span></span>
+          <span><i style="background:var(--seg-slack)"></i><span data-l="en">Slack of longer outer catheters</span><span data-l="zh" lang="zh-CN">外层导管的余长</span></span>
+          <span><i style="background:var(--seg-margin)"></i><span data-l="en">Spare length</span><span data-l="zh" lang="zh-CN">剩余长度</span></span>
+          <span><i style="background:repeating-linear-gradient(135deg,var(--seg-deficit) 0 4px,transparent 4px 7px);border:1px solid var(--seg-deficit)"></i><span data-l="en">Missing length</span><span data-l="zh" lang="zh-CN">缺少的长度</span></span>
+          <span><i style="background:var(--ink);width:3px"></i><span data-l="en">Device length</span><span data-l="zh" lang="zh-CN">器械长度</span></span>
         </div>
         <div class="bars" id="bars"></div>
         <div class="axis" id="axis"></div>
@@ -326,34 +369,34 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
   <section class="cad" aria-label="3D view of instrument path">
     <div class="prose" style="max-width:80ch">
-      <h2>Inside the robot: where working length is lost</h2>
-      <p>This is the 6-DOF assembly from CAD (STEP, December 2025), with the three instruments drawn along the centerline measured from the CAD tubes. The instruments run coaxially. The guide catheter is gripped in the purple module, the microcatheter in the white module, and the guidewire in the gold module. Every millimetre between the patient-side face of the first module and an instrument's hub stays inside the robot and can never enter the patient. That is the instrument's lost working length. Pick an instrument to highlight its lost length.</p>
+      <h2><span data-l="en">Inside the robot: where working length is lost</span><span data-l="zh" lang="zh-CN">机器人内部：工作长度损失在哪里</span></h2>
+      <p><span data-l="en">This is the 6-DOF assembly from CAD (STEP, December 2025), with the three instruments drawn along the centerline measured from the CAD tubes. The instruments run coaxially. The guide catheter is gripped in the purple module, the microcatheter in the white module, and the guidewire in the gold module. Every millimetre between the patient-side face of the first module and an instrument's hub stays inside the robot and can never enter the patient. That is the instrument's lost working length. Pick an instrument to highlight its lost length.</span><span data-l="zh" lang="zh-CN">这是 CAD 里的 6 自由度装配体（STEP，2025 年 12 月）。三根器械沿 CAD 管件量出的中心线画出，彼此同轴：导引导管由紫色模块夹持，微导管由白色模块夹持，导丝由金色模块夹持。从第一个模块朝向患者的端面，到某根器械的 hub，这一段始终留在机器人里，进不了患者体内，也就是这根器械损失的工作长度。选一根器械，就能高亮它损失的那一段。</span></p>
     </div>
     <div class="cadgrid">
       <div class="viewer" id="viewer">
         <div class="labels" id="labels" aria-hidden="true"></div>
-        <p class="viewer-msg" id="viewer-msg">Loading 3D model…</p>
-        <span class="viewer-hint">Drag to rotate · scroll to zoom · right-drag to pan</span>
+        <p class="viewer-msg" id="viewer-msg"><span data-l="en">Loading 3D model…</span><span data-l="zh" lang="zh-CN">正在加载 3D 模型…</span></p>
+        <span class="viewer-hint"><span data-l="en">Drag to rotate · scroll to zoom · right-drag to pan</span><span data-l="zh" lang="zh-CN">拖动旋转 · 滚轮缩放 · 右键拖动平移</span></span>
       </div>
       <div class="cadside">
         <div class="group">
-          <span class="label">Highlight</span>
+          <span class="label"><span data-l="en">Highlight</span><span data-l="zh" lang="zh-CN">高亮</span></span>
           <div class="seg seg-v" role="group" aria-label="Instrument to highlight">
-            <button type="button" data-focus="all" id="f-all">All three</button>
-            <button type="button" data-focus="guide" id="f-guide">Guide catheter</button>
-            <button type="button" data-focus="micro" id="f-micro">Microcatheter</button>
-            <button type="button" data-focus="wire" id="f-wire">Guidewire</button>
+            <button type="button" data-focus="all" id="f-all" data-en="All three" data-zh="全部三根">All three</button>
+            <button type="button" data-focus="guide" id="f-guide" data-en="Guide catheter" data-zh="导引导管">Guide catheter</button>
+            <button type="button" data-focus="micro" id="f-micro" data-en="Microcatheter" data-zh="微导管">Microcatheter</button>
+            <button type="button" data-focus="wire" id="f-wire" data-en="Guidewire" data-zh="导丝">Guidewire</button>
           </div>
         </div>
         <div class="group">
-          <div class="field"><label for="x-ray">Housing opacity</label><input id="x-ray" type="range" min="0.05" max="1" step="0.05" value="0.22"></div>
-          <label class="check"><input type="checkbox" id="x-labels" checked> Show segment labels</label>
-          <button type="button" class="btn" id="x-reset">Reset view</button>
+          <div class="field"><label for="x-ray"><span data-l="en">Housing opacity</span><span data-l="zh" lang="zh-CN">外壳不透明度</span></label><input id="x-ray" type="range" min="0.05" max="1" step="0.05" value="0.22"></div>
+          <label class="check"><input type="checkbox" id="x-labels" checked> <span data-l="en">Show segment labels</span><span data-l="zh" lang="zh-CN">显示分段标注</span></label>
+          <button type="button" class="btn" id="x-reset" data-en="Reset view" data-zh="重置视角">Reset view</button>
         </div>
         <div class="group">
-          <span class="label">Length lost inside the robot, CAD (mm)</span>
+          <span class="label"><span data-l="en">Length lost inside the robot, CAD (mm)</span><span data-l="zh" lang="zh-CN">机器人内损失的长度，CAD 实测 (mm)</span></span>
           <table class="cadtable" id="cadtable"></table>
-          <p class="note">Measured along the instrument centerline. The two U-turn arcs agree to within 5 mm across two methods (tube surface area and centerline polyline). Tube diameters are drawn about 2× actual so they stay visible. The U-turns are only sketched in CAD and can be made shorter on the real robot; enter the real value as g in the calculator.</p>
+          <p class="note"><span data-l="en">Measured along the instrument centerline. The two U-turn arcs agree to within 5 mm across two methods (tube surface area and centerline polyline). Tube diameters are drawn about 2× actual so they stay visible. The U-turns are only sketched in CAD and can be made shorter on the real robot; enter the real value as g in the calculator.</span><span data-l="zh" lang="zh-CN">沿器械中心线测量。两段 U-turn 弧线用两种方法（管件表面积、中心线折线）量出的结果相差不到 5 mm。管子按实际直径的约 2 倍画出，方便看清。CAD 里的 U-turn 只是示意，真机上可以做得更短，请把实测值填到计算器的 g 里。</span></p>
         </div>
         <div class="group" id="cadcompare"></div>
       </div>
@@ -362,57 +405,58 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
   <section class="method" aria-label="Method">
     <div class="prose">
-      <h2>How the October 2026 instrument sets were chosen</h2>
+      <h2><span data-l="en">How the October 2026 instrument sets were chosen</span><span data-l="zh" lang="zh-CN">2026 年 10 月的几套器械是怎么选出来的</span></h2>
       <ol>
-        <li><b>List the instrument stack for each procedure.</b> For angiography, aspiration thrombectomy and aneurysm coiling we wrote down every coaxial instrument used clinically, where it enters and where its tip stops. For example, in thrombectomy the guide stops in the distal cervical ICA, the aspiration catheter at the clot face in M1, and the wire in M2.</li>
-        <li><b>Estimate depth inside the body.</b> We estimated the vessel path length from the femoral puncture to each target for an average adult: about 85 cm to the cervical ICA and 102 cm to M1. We added 12 cm for tall patients or a Type III arch. These are estimates and should be replaced with phantom or CTA centerline measurements.</li>
-        <li><b>Model what the robot consumes.</b> An instrument gripped by the k-th module from the patient passes through k modules and k−1 gaps between them. With LegoBot's <code>L<sub>m</sub> = 19 cm</code> and <code>g = 12 cm</code>, that is 19, 50, 81 and 112 cm for k = 1 to 4. For example, the middle catheter in a 3-module stack loses 2 × 19 + 12 = 50 cm.</li>
-        <li><b>Compare with commercial lengths.</b> Required length = depth + sheath hub (3 cm) + free span + robot loss. Standard neuro devices came up 20–50 cm short at the middle catheter layers: a 132 cm aspiration catheter at k = 2 only reaches about 79 cm, near the carotid bifurcation. Guidewires were fine once we switched to 300 cm exchange length.</li>
-        <li><b>Substitute devices from other specialties.</b> Clinicians confirmed that for phantom and animal work, a peripheral or cardiac device can replace a neuro device of the same diameter. Radial-to-peripheral (R2P) products are the richest source of long devices: guide sheaths of 149–150 cm and support catheters or microcatheters of 200 cm.</li>
-        <li><b>Check the coaxial fit.</b> Each inner instrument's OD must fit inside the outer one's ID. We preferred pairs the manufacturer documents as telescoping, such as the Surmodics Sublime 0.018" inside the 0.035" model.</li>
-        <li><b>Count the slack of longer outer catheters.</b> If an outer catheter is longer than it needs to be, the extra shaft sits between the robot and its hub, and every instrument inside it must travel that extra distance too. So the best outer catheter is the shortest one that still reaches, and each inner instrument must be at least the outer one's length + its protrusion + g + L<sub>m</sub>. This is also why a standard coil pusher cannot reach the k=3 module.</li>
-        <li><b>Shortlist 2–3 listings per slot</b> on DotMed and medicalmaterials.com that meet the required length, noting price and expiry. Expired stock is acceptable for phantom work; check your protocol before using it in animals.</li>
+        <li><span data-l="en"><b>List the instrument stack for each procedure.</b> For angiography, aspiration thrombectomy and aneurysm coiling we wrote down every coaxial instrument used clinically, where it enters and where its tip stops. For example, in thrombectomy the guide stops in the distal cervical ICA, the aspiration catheter at the clot face in M1, and the wire in M2.</span><span data-l="zh" lang="zh-CN"><b>列出每种手术的器械组合。</b>对造影、抽吸取栓和动脉瘤栓塞，我们列出了临床上用到的每一根同轴器械，以及它从哪里进入、头端停在哪里。以取栓为例：导引导管停在颈内动脉颈段远端，抽吸导管停在 M1 的血栓表面，导丝到 M2。</span></li>
+        <li><span data-l="en"><b>Estimate depth inside the body.</b> We estimated the vessel path length from the femoral puncture to each target for an average adult: about 85 cm to the cervical ICA and 102 cm to M1. We added 12 cm for tall patients or a Type III arch. These are estimates and should be replaced with phantom or CTA centerline measurements.</span><span data-l="zh" lang="zh-CN"><b>估计体内深度。</b>按成年人平均身材，估计从股动脉穿刺点到各目标的血管路径长度：到颈内动脉颈段约 85 cm，到 M1 约 102 cm。高个子或 III 型主动脉弓再加 12 cm。这些都是估计值，应该换成在模型或 CTA 上量到的中心线长度。</span></li>
+        <li><span data-l="en"><b>Model what the robot consumes.</b> An instrument gripped by the k-th module from the patient passes through k modules and k−1 gaps between them. With LegoBot's <code>L<sub>m</sub> = 19 cm</code> and <code>g = 12 cm</code>, that is 19, 50, 81 and 112 cm for k = 1 to 4. For example, the middle catheter in a 3-module stack loses 2 × 19 + 12 = 50 cm.</span><span data-l="zh" lang="zh-CN"><b>算出机器人用掉的长度。</b>从患者一侧数第 k 个模块夹持的器械，要穿过 k 个模块和它们之间的 k−1 段间隙。按 LegoBot 的 <code>L<sub>m</sub> = 19 cm</code>、<code>g = 12 cm</code>，k = 1 到 4 分别损失 19、50、81 和 112 cm。比如 3 模块组合里中间那根导管，损失 2 × 19 + 12 = 50 cm。</span></li>
+        <li><span data-l="en"><b>Compare with commercial lengths.</b> Required length = depth + sheath hub (3 cm) + free span + robot loss. Standard neuro devices came up 20–50 cm short at the middle catheter layers: a 132 cm aspiration catheter at k = 2 only reaches about 79 cm, near the carotid bifurcation. Guidewires were fine once we switched to 300 cm exchange length.</span><span data-l="zh" lang="zh-CN"><b>和市售长度对比。</b>所需长度 = 体内深度 + 鞘 hub（3 cm）+ 游离段 + 机器人内损失。标准神经介入器械在中间几层导管上短了 20–50 cm。放在 k = 2 的 132 cm 抽吸导管只能到约 79 cm，大约在颈动脉分叉。导丝换成 300 cm 交换长度后都够用。</span></li>
+        <li><span data-l="en"><b>Substitute devices from other specialties.</b> Clinicians confirmed that for phantom and animal work, a peripheral or cardiac device can replace a neuro device of the same diameter. Radial-to-peripheral (R2P) products are the richest source of long devices: guide sheaths of 149–150 cm and support catheters or microcatheters of 200 cm.</span><span data-l="zh" lang="zh-CN"><b>借用其他专科的器械。</b>临床医生确认，做模型和动物实验时，同直径的外周或心脏介入器械可以代替神经介入器械。长尺寸器械最多的是桡动脉到外周（R2P）这一类，导引鞘有 149–150 cm，支撑导管和微导管有 200 cm。</span></li>
+        <li><span data-l="en"><b>Check the coaxial fit.</b> Each inner instrument's OD must fit inside the outer one's ID. We preferred pairs the manufacturer documents as telescoping, such as the Surmodics Sublime 0.018" inside the 0.035" model.</span><span data-l="zh" lang="zh-CN"><b>检查能否同轴套入。</b>每根内层器械的 OD 都必须小于外层的 ID。我们优先选厂家写明可以互相套用的组合，比如把 Surmodics Sublime 0.018" 套进 0.035" 型号。</span></li>
+        <li><span data-l="en"><b>Count the slack of longer outer catheters.</b> If an outer catheter is longer than it needs to be, the extra shaft sits between the robot and its hub, and every instrument inside it must travel that extra distance too. So the best outer catheter is the shortest one that still reaches, and each inner instrument must be at least the outer one's length + its protrusion + g + L<sub>m</sub>. This is also why a standard coil pusher cannot reach the k=3 module.</span><span data-l="zh" lang="zh-CN"><b>计入外层导管的余长。</b>外层导管比需要的长时，多出的管身会留在机器人和它的 hub 之间，里面的每根器械都要多走这一段。所以外层导管最好选能到位的最短型号；每根内层器械的长度，至少要等于外层器械长度 + 伸出外层头端的长度 + g + L<sub>m</sub>。标准 coil pusher 够不到 k=3 模块，也是这个原因。</span></li>
+        <li><span data-l="en"><b>Shortlist 2–3 listings per slot</b> on DotMed and medicalmaterials.com that meet the required length, noting price and expiry. Expired stock is acceptable for phantom work; check your protocol before using it in animals.</span><span data-l="zh" lang="zh-CN"><b>每个位置挑 2–3 个挂牌。</b>在 DotMed 和 medicalmaterials.com 上找满足所需长度的挂牌，记下价格和有效期。模型实验可以用过期器械，用于动物实验前请先确认实验方案的要求。</span></li>
       </ol>
     </div>
     <div class="prose">
-      <h2>Gaps found in the search</h2>
+      <h2><span data-l="en">Gaps found in the search</span><span data-l="zh" lang="zh-CN">搜索中发现的缺口</span></h2>
       <div class="gaps">
-        <div class="gap"><b>No 8F guide catheter of 110 cm or longer.</b> We used a 6F long guide sheath instead (Terumo R2P Destination Slender, 149 cm, ID 0.087").</div>
-        <div class="gap"><b>No large-lumen (≥ 0.070") catheter of 155 cm or longer.</b> The aspiration slot uses 0.035"-lumen catheters, so aspiration force is far lower and clot analogs may need to be softer. The Export AP 140 cm used previously is about 15 cm short at k = 2.</div>
-        <div class="gap"><b>Only one microcatheter family is 190 cm or longer:</b> Surmodics Sublime at 200 cm, and every listing found was expired.</div>
-        <div class="gap"><b>Four-module stacks are not feasible with these devices.</b> Each inner layer must be at least about 31 cm + its protrusion longer than the layer outside it. Thrombectomy with a microcatheter (Set 3) and coiling with a DAC (Set 4) both fail at k=3. Coiling without a DAC (Set 5) works.</div>
-        <div class="gap"><b>Coil pushers are a fixed length.</b> The Boston Coil Pusher-16 (177 cm) and neuro detachable coils (175–190 cm) cannot reach the k=3 module. Use 0.018" pushable coils pushed with a 0.018" × 300 cm wire (Set 5).</div>
-        <div class="gap"><b>The Acuity Whisper 0.014" × 190 cm wire</b> used in the paper is 2 cm short as the k = 3 wire for an average adult.</div>
+        <div class="gap"><span data-l="en"><b>No 8F guide catheter of 110 cm or longer.</b> We used a 6F long guide sheath instead (Terumo R2P Destination Slender, 149 cm, ID 0.087").</span><span data-l="zh" lang="zh-CN"><b>没有 110 cm 以上的 8F 导引导管。</b>我们改用 6F 长导引鞘（Terumo R2P Destination Slender，149 cm，ID 0.087"）。</span></div>
+        <div class="gap"><span data-l="en"><b>No large-lumen (≥ 0.070") catheter of 155 cm or longer.</b> The aspiration slot uses 0.035"-lumen catheters, so aspiration force is far lower and clot analogs may need to be softer. The Export AP 140 cm used previously is about 15 cm short at k = 2.</span><span data-l="zh" lang="zh-CN"><b>没有 155 cm 以上的大腔（≥ 0.070"）导管。</b>抽吸位置只能用 0.035" 内腔的导管，抽吸力小得多，血栓模型可能要做得更软。之前用的 Export AP 140 cm 放在 k = 2 约短 15 cm。</span></div>
+        <div class="gap"><span data-l="en"><b>Only one microcatheter family is 190 cm or longer:</b> Surmodics Sublime at 200 cm, and every listing found was expired.</span><span data-l="zh" lang="zh-CN"><b>190 cm 以上的微导管只找到一个系列：</b>Surmodics Sublime 200 cm，找到的挂牌全部已经过期。</span></div>
+        <div class="gap"><span data-l="en"><b>Four-module stacks are not feasible with these devices.</b> Each inner layer must be at least about 31 cm + its protrusion longer than the layer outside it. Thrombectomy with a microcatheter (Set 3) and coiling with a DAC (Set 4) both fail at k=3. Coiling without a DAC (Set 5) works.</span><span data-l="zh" lang="zh-CN"><b>这些器械组不成 4 模块组合。</b>每一层内层器械至少要比外面一层长约 31 cm，再加上伸出的长度。取栓加微导管（第 3 套）和带 DAC 的栓塞（第 4 套）都在 k=3 这一层不够长。不用 DAC 的栓塞（第 5 套）可行。</span></div>
+        <div class="gap"><span data-l="en"><b>Coil pushers are a fixed length.</b> The Boston Coil Pusher-16 (177 cm) and neuro detachable coils (175–190 cm) cannot reach the k=3 module. Use 0.018" pushable coils pushed with a 0.018" × 300 cm wire (Set 5).</span><span data-l="zh" lang="zh-CN"><b>coil pusher 的长度是固定的。</b>Boston Coil Pusher-16（177 cm）和神经介入用的可解脱弹簧圈（175–190 cm）都够不到 k=3 模块。请改用 0.018" 推送式弹簧圈，用 0.018" × 300 cm 导丝来推（第 5 套）。</span></div>
+        <div class="gap"><span data-l="en"><b>The Acuity Whisper 0.014" × 190 cm wire</b> used in the paper is 2 cm short as the k = 3 wire for an average adult.</span><span data-l="zh" lang="zh-CN"><b>论文里用的 Acuity Whisper 0.014" × 190 cm 导丝</b>放在 k = 3，按平均身材算还短 2 cm。</span></div>
       </div>
-      <p class="note">Searched 2 October 2026. Marketplace listings change daily; check that each link is still live before ordering.</p>
+      <p class="note"><span data-l="en">Searched 2 October 2026. Marketplace listings change daily; check that each link is still live before ordering.</span><span data-l="zh" lang="zh-CN">搜索日期为 2026 年 10 月 2 日。挂牌每天都在变，下单前请确认链接还有效。</span></p>
     </div>
   </section>
 
   <section class="prose" style="max-width:none" aria-label="Purchase sets">
-    <h2>Selected purchase sets</h2>
-    <p class="note">Required length is shown as average / tall-or-Type III, with L<sub>m</sub> = 19, g = 12, s = 0, h = 3, hub at own module exit, slack of outer catheters counted. Each slot lists 2–3 candidates.</p>
+    <h2><span data-l="en">Selected purchase sets</span><span data-l="zh" lang="zh-CN">选定的采购清单</span></h2>
+    <p class="note"><span data-l="en">Required length is shown as average / tall-or-Type III, with L<sub>m</sub> = 19, g = 12, s = 0, h = 3, hub at own module exit, slack of outer catheters counted. Each slot lists 2–3 candidates.</span><span data-l="zh" lang="zh-CN">所需长度依次是平均身材 / 高个子或 III 型弓，按 L<sub>m</sub> = 19、g = 12、s = 0、h = 3、hub 装在本模块出口计算，并计入外层余长。每个位置列出 2–3 个候选。</span></p>
     <div id="sets" style="display:flex;flex-direction:column;gap:10px"></div>
   </section>
 
-  <footer>© 2026 Weibo Gao · LegoBot Work-Length Planner v1.1. Built for LegoBot (Gao et al., IEEE/ASME T-MECH 2026). The depth estimates and device ODs/IDs are approximate. Confirm them against device IFUs and your own phantom measurements before relying on the results.</footer>
+  <footer><span data-l="en">© 2026 Weibo Gao · LegoBot Work-Length Planner v1.1. The depth estimates and device ODs/IDs are approximate. Confirm them against device IFUs and your own phantom measurements before relying on the results.</span><span data-l="zh" lang="zh-CN">© 2026 Weibo Gao · LegoBot 工作长度计算器 v1.1。体内深度和器械 OD/ID 都是近似值，使用结果前请对照器械说明书和你们自己在模型上的测量。</span></footer>
 </div>
 
 <script>
 (function(){
   "use strict";
+  function T(en, zh){ return window.LWPI18N ? window.LWPI18N.T(en, zh) : en; }
   var LANDMARKS = [
-    {id:"arch",  name:"Aortic arch / CCA origin", d:65},
-    {id:"cbif",  name:"Carotid bifurcation", d:78},
-    {id:"cicap", name:"Cervical ICA, proximal (C2–C3)", d:80},
-    {id:"cicad", name:"Cervical ICA, distal (C1)", d:85},
-    {id:"pica",  name:"Petrous ICA", d:88},
-    {id:"cav",   name:"Cavernous ICA", d:93},
-    {id:"supra", name:"Supraclinoid ICA", d:97},
-    {id:"term",  name:"ICA terminus", d:99},
-    {id:"m1",    name:"MCA M1", d:102},
-    {id:"aneu",  name:"MCA bifurcation aneurysm", d:104},
-    {id:"m2",    name:"MCA M2", d:108},
-    {id:"m3",    name:"MCA M2–M3", d:112}
+    {id:"arch",  name:"Aortic arch / CCA origin", zh:"主动脉弓 / 颈总动脉起始部", d:65},
+    {id:"cbif",  name:"Carotid bifurcation", zh:"颈动脉分叉", d:78},
+    {id:"cicap", name:"Cervical ICA, proximal (C2–C3)", zh:"颈内动脉颈段近端（C2–C3）", d:80},
+    {id:"cicad", name:"Cervical ICA, distal (C1)", zh:"颈内动脉颈段远端（C1）", d:85},
+    {id:"pica",  name:"Petrous ICA", zh:"颈内动脉岩段", d:88},
+    {id:"cav",   name:"Cavernous ICA", zh:"颈内动脉海绵窦段", d:93},
+    {id:"supra", name:"Supraclinoid ICA", zh:"颈内动脉床突上段", d:97},
+    {id:"term",  name:"ICA terminus", zh:"颈内动脉末端", d:99},
+    {id:"m1",    name:"MCA M1", zh:"大脑中动脉 M1 段", d:102},
+    {id:"aneu",  name:"MCA bifurcation aneurysm", zh:"MCA 分叉部动脉瘤", d:104},
+    {id:"m2",    name:"MCA M2", zh:"大脑中动脉 M2 段", d:108},
+    {id:"m3",    name:"MCA M2–M3", zh:"大脑中动脉 M2–M3 段", d:112}
   ];
   var ACCESS = {
     femoral: function(id){ return LANDMARKS.filter(function(l){return l.id===id;})[0].d; },
@@ -515,13 +559,22 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     ["Guidewires 0.018\" & coil pushers", "Medtronic FMD peripheral 0.018\"", 300, 0.018, null],
     ["Guidewires 0.018\" & coil pushers", "Boston Scientific Coil Pusher-16", 177, 0.016, null]
   ];
+  var LIBZH = {
+    "Guide catheters & guide sheaths": "导引导管与导引鞘",
+    "Aspiration & intermediate catheters": "抽吸导管与中间导管",
+    "Microcatheters": "微导管",
+    "Diagnostic catheters": "造影导管",
+    "Guidewires 0.035\"": "0.035\" 导丝",
+    "Guidewires 0.014\"": "0.014\" 导丝",
+    "Guidewires 0.018\" & coil pushers": "0.018\" 导丝与 coil pusher"
+  };
   function libSelect(i, onPick){
     var el = document.createElement("select");
     el.id = "r"+i+"-lib"; el.setAttribute("aria-label", "Choose instrument "+(i+1)+" from the device library");
-    var o0 = document.createElement("option"); o0.value = ""; o0.textContent = "Choose from device library…"; el.appendChild(o0);
+    var o0 = document.createElement("option"); o0.value = ""; o0.textContent = T("Choose from device library…", "从器械库中选择…"); el.appendChild(o0);
     var groups = {};
     LIB.forEach(function(d, j){
-      if(!groups[d[0]]){ groups[d[0]] = document.createElement("optgroup"); groups[d[0]].label = d[0]; el.appendChild(groups[d[0]]); }
+      if(!groups[d[0]]){ groups[d[0]] = document.createElement("optgroup"); groups[d[0]].label = T(d[0], LIBZH[d[0]]); el.appendChild(groups[d[0]]); }
       var o = document.createElement("option"); o.value = j;
       o.textContent = d[1] + " · " + d[2] + " cm" + (d[4]!=null ? " · ID " + d[4] + "\"" : (d[3]!=null && d[0].indexOf("Guidewires")===0 ? "" : ""));
       groups[d[0]].appendChild(o);
@@ -561,12 +614,13 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   function fmt(n, d){ if(!isFinite(n)) return "—"; d = d||0; var r = Math.round(n*Math.pow(10,d))/Math.pow(10,d); return (r>0 && arguments[2]) ? "+"+r.toFixed(d) : r.toFixed(d); }
   function sgn(n){ return fmt(n,0,true); }
   function cls(m){ if(!isFinite(m)) return "na"; return m>=5 ? "ok" : (m>=0 ? "warn" : "bad"); }
-  function lmName(id){ var l = LANDMARKS.filter(function(x){return x.id===id;})[0]; return l ? l.name : id; }
+  function lmLabel(l){ return T(l.name, l.zh); }
+  function lmName(id){ var l = LANDMARKS.filter(function(x){return x.id===id;})[0]; return l ? lmLabel(l) : id; }
   function reachName(depth){
     var best = null;
     LANDMARKS.forEach(function(l){ var d = state.depths[l.id]; if(isFinite(d) && d <= depth + 0.01 && (!best || d >= state.depths[best.id])) best = l; });
-    if(!best) return "short of the aortic arch";
-    return "≈ " + best.name;
+    if(!best) return T("short of the aortic arch", "到不了主动脉弓");
+    return "≈ " + lmLabel(best);
   }
 
   // Required length of layer k = depth + sheath hub + free span + robot loss + slack carried from outer layers.
@@ -629,7 +683,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     ["avg","tall"].forEach(function(v){ $("v-"+v).setAttribute("aria-pressed", String(state.view===v)); });
     var t = $("lm-table"); t.innerHTML = "";
     LANDMARKS.forEach(function(l){
-      var lab = document.createElement("label"); lab.htmlFor = "lm-"+l.id; lab.textContent = l.name;
+      var lab = document.createElement("label"); lab.htmlFor = "lm-"+l.id; lab.textContent = lmLabel(l);
       var inp = document.createElement("input"); inp.type="number"; inp.step="0.5"; inp.id="lm-"+l.id; inp.value = state.depths[l.id];
       inp.addEventListener("input", function(){ state.depths[l.id] = num(inp.value); state.access = "custom"; $("p-access").value = "custom"; update(); });
       t.appendChild(lab); t.appendChild(inp);
@@ -640,7 +694,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     var el;
     if(type==="select"){
       el = document.createElement("select");
-      LANDMARKS.forEach(function(l){ var o=document.createElement("option"); o.value=l.id; o.textContent=l.name; el.appendChild(o); });
+      LANDMARKS.forEach(function(l){ var o=document.createElement("option"); o.value=l.id; o.textContent=lmLabel(l); el.appendChild(o); });
       el.value = val;
       el.addEventListener("change", function(){ onInput(el.value); });
     } else {
@@ -660,10 +714,10 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       var kc = td("k");
       var kn = document.createElement("span"); kn.id = "c"+i+"-k"; kc.appendChild(kn);
       if(i>0){
-        var sw = document.createElement("label"); sw.className = "swapbox"; sw.title = "Loaded into the same module as the row above, after that instrument is withdrawn";
+        var sw = document.createElement("label"); sw.className = "swapbox"; sw.title = T("Loaded into the same module as the row above, after that instrument is withdrawn", "等上一行的器械撤出后，装进同一个模块");
         var cb = document.createElement("input"); cb.type = "checkbox"; cb.id = "r"+i+"-swap"; cb.checked = !!r.swap;
         cb.addEventListener("change", function(){ r.swap = cb.checked; update(); });
-        sw.appendChild(cb); sw.appendChild(document.createTextNode("swap")); kc.appendChild(sw);
+        sw.appendChild(cb); sw.appendChild(document.createTextNode(T("swap", "换装"))); kc.appendChild(sw);
       }
       var ic = td(); var box = document.createElement("div"); box.className = "instcell"; ic.appendChild(box);
       box.appendChild(libSelect(i, function(d){
@@ -712,9 +766,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       $("c"+i+"-reach").innerHTML = '<span class="num">'+fmt(c.reach)+' cm</span><span class="reach">'+(isFinite(c.reach)?reachName(c.reach):"")+'</span>';
       $("c"+i+"-lmmax").innerHTML = pairHTML(scan.rowA[i], scan.rowT[i], false, 1);
       var f = $("c"+i+"-fit");
-      if(c.k===1) f.innerHTML = '<span class="chip na">outermost</span>';
-      else if(c.fit===null) f.innerHTML = '<span class="chip na">verify</span>';
-      else f.innerHTML = '<span class="chip '+(c.fit>=0?"ok":"bad")+'">'+(c.fit>=0?"fits":"too big")+' '+(c.fit>0?"+":"")+c.fit.toFixed(3)+'"</span>';
+      if(c.k===1) f.innerHTML = '<span class="chip na">'+T("outermost", "最外层")+'</span>';
+      else if(c.fit===null) f.innerHTML = '<span class="chip na">'+T("verify", "待核实")+'</span>';
+      else f.innerHTML = '<span class="chip '+(c.fit>=0?"ok":"bad")+'">'+(c.fit>=0?T("fits", "可套入"):T("too big", "套不进"))+' '+(c.fit>0?"+":"")+c.fit.toFixed(3)+'"</span>';
     });
     renderSummary(res, scan);
     renderBars(res);
@@ -737,11 +791,11 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     function card(cl, label, v, s){ return '<div class="stat '+cl+'"><span class="label">'+label+'</span><span class="v">'+v+'</span><span class="s">'+s+'</span></div>'; }
     var n = res.length;
     var html = "";
-    html += card(shortA ? "bad" : (worst && worst.mA<5 ? "warn":"ok"), "Average adult", shortA ? shortA+" of "+n+" short" : "All "+n+" reach", worst ? "Tightest: layer "+worst.k+", "+sgn(worst.mA)+" cm" : "");
-    html += card(shortT ? "bad" : "ok", "Tall / Type III", shortT ? shortT+" of "+n+" short" : "All "+n+" reach", "Adds "+fmt(num(state.tall))+" cm to every depth");
+    html += card(shortA ? "bad" : (worst && worst.mA<5 ? "warn":"ok"), T("Average adult", "平均身材"), shortA ? T(shortA+" of "+n+" short", n+" 根中 "+shortA+" 根不够长") : T("All "+n+" reach", "全部 "+n+" 根都能到位"), worst ? T("Tightest: layer "+worst.k+", "+sgn(worst.mA)+" cm", "最紧的是第 "+worst.k+" 层，"+sgn(worst.mA)+" cm") : "");
+    html += card(shortT ? "bad" : "ok", T("Tall / Type III", "高个子 / III 型弓"), shortT ? T(shortT+" of "+n+" short", n+" 根中 "+shortT+" 根不够长") : T("All "+n+" reach", "全部 "+n+" 根都能到位"), T("Adds "+fmt(num(state.tall))+" cm to every depth", "每个深度加 "+fmt(num(state.tall))+" cm"));
     var okL = lmA >= P.lm;
-    html += card(okL ? "ok" : "bad", "Largest L<sub>m</sub> that fits", '<span class="num">'+fmt(lmA,1)+'</span> <span style="font-size:14px;color:var(--muted)">/ '+fmt(lmT,1)+' cm</span>', "Average / tall, with these devices, g = "+fmt(P.g,1)+". Now "+fmt(P.lm,1)+" cm."+(isNaN(lmA) ? " No L<sub>m</sub> works for the average case." : ""));
-    html += card("", "Robot loss by layer", '<span class="num" style="font-size:18px">'+losses+'</span>', "cm, for k = 1…"+res.filter(function(c){ return !c.swap; }).length);
+    html += card(okL ? "ok" : "bad", T("Largest L<sub>m</sub> that fits", "能容下的最大 L<sub>m</sub>"), '<span class="num">'+fmt(lmA,1)+'</span> <span style="font-size:14px;color:var(--muted)">/ '+fmt(lmT,1)+' cm</span>', T("Average / tall, with these devices, g = "+fmt(P.g,1)+". Now "+fmt(P.lm,1)+" cm."+(isNaN(lmA) ? " No L<sub>m</sub> works for the average case." : ""), "依次为平均身材 / 高个子，按当前器械和 g = "+fmt(P.g,1)+" 计算，当前为 "+fmt(P.lm,1)+" cm。"+(isNaN(lmA) ? "平均身材下没有可行的 L<sub>m</sub>。" : "")));
+    html += card("", T("Robot loss by layer", "各层机器人内损失"), '<span class="num" style="font-size:18px">'+losses+'</span>', T("cm, for k = 1…", "cm，k = 1…")+res.filter(function(c){ return !c.swap; }).length);
     $("summary").innerHTML = html;
   }
 
@@ -812,80 +866,96 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       document.body.appendChild(ta); ta.select();
       var ok = false; try{ ok = document.execCommand("copy"); }catch(e){}
       document.body.removeChild(ta);
-      t.textContent = ok ? "Copied. Paste into Excel or Sheets." : "Copy was blocked by the browser. Select the table and copy it manually.";
+      t.textContent = ok ? T("Copied. Paste into Excel or Sheets.", "已复制，可以粘贴到 Excel 或 Google 表格。") : T("Copy was blocked by the browser. Select the table and copy it manually.", "浏览器拦截了复制，请手动选中表格再复制。");
     }
     try{
-      navigator.clipboard.writeText(text).then(function(){ t.textContent = "Copied. Paste into Excel or Sheets."; }, fallback);
+      navigator.clipboard.writeText(text).then(function(){ t.textContent = T("Copied. Paste into Excel or Sheets.", "已复制，可以粘贴到 Excel 或 Google 表格。"); }, fallback);
     }catch(e){ fallback(); }
   });
 
   // ---------- purchase-set reference ----------
   var D = "https://www.dotmed.com/listing/disposables-general/";
   var SETS = [
-    {title:"Set 1 · Diagnostic angiography", sub:"2 modules · works", slots:[
-      {name:"k=1 · 5F angiocatheter", req:"≥ 102 / 114 cm · 125 cm gives +23 / +11", items:[
+    {title:["Set 1 · Diagnostic angiography","第 1 套 · 诊断性造影"], sub:["2 modules · works","2 个模块 · 可行"], slots:[
+      {name:["k=1 · 5F angiocatheter","k=1 · 5F 造影导管"], req:["≥ 102 / 114 cm · 125 cm gives +23 / +11","≥ 102 / 114 cm · 125 cm 的余量为 +23 / +11"], items:[
         ["Cordis Tempo Aqua Sidewinder II (Simmons shape) 5F × 125 cm, $20", D+"cordis/srd6109/special-sidewinder-ii-tempo-aqua-angiographic-catheter-5f-x-125cm-l/5919670"],
         ["Merit Impress 5F Berenstein × 125 cm, case of 5, $200", D+"merit-medical/512538ber/impress-5f-bern-angiographic-catheters-125cm-ref-case-of-5/5875827"],
         ["Cook Torcon NB Advantage 5F × 125 cm, lot of 3, $45 (exp 2024-03)", D+"cook-medical/lot-of-3-torcon-nb-advantage-catheter-5f-x-125cm-g10755-exp2024-03-z6/torcon-nb-advantage-catheter/5481557"]]},
-      {name:"k=2 · 0.035\" hydrophilic guidewire", req:"≥ 166 / 166 cm incl. catheter slack · 180 cm gives +14 / +14", items:[
+      {name:["k=2 · 0.035\" hydrophilic guidewire","k=2 · 0.035\" 亲水导丝"], req:["≥ 166 / 166 cm incl. catheter slack · 180 cm gives +14 / +14","≥ 166 / 166 cm（含导管余长）· 180 cm 的余量为 +14 / +14"], items:[
         ["Terumo Glidewire 0.035\" × 180 cm, angled stiff, $30", D+"terumo/glidewire-hydrophilic-guidewire-0035-x-180cm-angled-stiff-gs3508-exp-2026-04-to-2026-08-aa53-k17/glidewire/5505522"],
         ["Boston Scientific NaviPro hydrophilic angled 0.035\" × 260 cm, $15", D+"boston-scientific/5623/navipro-hydrophilic-guidewire-standard-angled-tip-0035-x-260cm/5804001"],
         ["Cordis Storq steerable angled 0.035\" × 180 cm, $20", D+"cordis/503-456j/storq-standard-steerable-guidewire-angled-0035-x-180cm/5426263"]]}
     ]},
-    {title:"Set 2 · MCA aspiration thrombectomy", sub:"3 modules · works", slots:[
-      {name:"k=1 · 6F long guide sheath (replaces 8F guide)", req:"≥ 107 / 119 cm · prefer the shortest that reaches, since its slack is passed on to k=2 and k=3", items:[
+    {title:["Set 2 · MCA aspiration thrombectomy","第 2 套 · MCA 抽吸取栓"], sub:["3 modules · works","3 个模块 · 可行"], slots:[
+      {name:["k=1 · 6F long guide sheath (replaces 8F guide)","k=1 · 6F 长导引鞘（代替 8F 导引导管）"], req:["≥ 107 / 119 cm · prefer the shortest that reaches, since its slack is passed on to k=2 and k=3","≥ 107 / 119 cm · 选能到位的最短型号，它多出的长度会转给 k=2 和 k=3"], items:[
         ["Terumo R2P Destination Slender 6F × 119 cm, $175 (exp 2026-02) · +12 / 0 · recommended", D+"terumo/r2p-destination-slender-guiding-sheath-6f-x-119cm-straight-gs-r6st1c12w-exp2026-02-bb44/r2p-destination-slender/5619942"],
         ["Terumo R2P Destination Slender 6F × 149 cm, ID 0.087\", $275 (exp 2027-02) · +42 / +30", D+"terumo/gs-r6st1c10w/r2p-destination-slender-transradial-guiding-sheath-6fr-x-149cm-exp-2-1-2027/5663325"],
         ["Surmodics/Creagh Sublime Radial Access Guide Sheath 6F × 150 cm, $99 · +43 / +31", D+"creagh-medical/sra-gs35-6f150/sublime-radial-access-guide-sheath-6f-x-150cm/5317980"]]},
-      {name:"k=2 · aspiration slot", req:"≥ 167 / 167 cm with the 119 cm guide (≥ 197 with a 149 cm guide) · only 0.035\"-lumen options exist", items:[
+      {name:["k=2 · aspiration slot","k=2 · 抽吸导管位置"], req:["≥ 167 / 167 cm with the 119 cm guide (≥ 197 with a 149 cm guide) · only 0.035\"-lumen options exist","配 119 cm 导引鞘时 ≥ 167 / 167 cm（配 149 cm 时 ≥ 197）· 只找到 0.035\" 内腔的型号"], items:[
         ["CSI ViperCath XC 5F × 200 cm straight, ID 0.035\" / OD 0.059\", $100 · +33 / +33", D+"csi/035-xc-200-0/vipercath-xc-peripheral-exchange-catheter-5f-x-200cm-straight/5034520"],
         ["Surmodics Sublime Microcatheter 0.035\" × 200 cm, $538 (expired) · +33 / +33", D+"surmodics/sra-mc35-str200/sublime-microcatheter-200cm-straight-0035-box-of-1-expired/5851544"],
         ["Penumbra Indigo CAT3 4.1F × 150 cm (true aspiration catheter), $50 · −17 / −17, too short", D+"penumbra/cat3/indigo-aspiration-catheter-150cm/5610262"]]},
-      {name:"k=3 · 0.014\" guidewire", req:"≥ 237 / 237 cm incl. slack · 300 cm gives +63 / +63", items:[
+      {name:["k=3 · 0.014\" guidewire","k=3 · 0.014\" 导丝"], req:["≥ 237 / 237 cm incl. slack · 300 cm gives +63 / +63","≥ 237 / 237 cm（含余长）· 300 cm 的余量为 +63 / +63"], items:[
         ["Boston Scientific ChoICE PT Extra Support 0.014\" × 300 cm, $20", D+"boston-scientific/1215501j/choice-pt-guidewire-with-ice-hydrophilic-coating-extra-support-j-tip-0014-x-300cm/5661177"],
         ["Abbott Hi-Torque Balance Middleweight 0.014\" × 300 cm, $50", D+"abbott/1009661/hi-torque-balance-middleweight-universal-guidewire-0014-x-300cm-x/5584758"],
         ["Cordis Stabilizer Plus Super Soft 0.014\" × 300 cm, $15", D+"cordis/507-114x/stabilizer-plus-steerable-guidewire-super-soft-straight-0014-x-300cm/5777052"]]}
     ]},
-    {title:"Set 3 · MCA aspiration + microcatheter", sub:"4 modules · not feasible with the devices found", slots:[
-      {name:"Why it fails", req:"", items:[], flag:"Once slack is counted, the k=3 microcatheter must be at least the k=2 catheter's length + 6 cm protrusion + 31 cm (g + L_m). With a 200 cm k=2 catheter that is 237 cm, and the longest microcatheter found is 200 cm (−37). It would only work for an average adult with a guide of 107–115 cm and a k=2 catheter of 155–163 cm, and none was found. Use Set 2."},
-      {name:"Devices found (kept for reference)", req:"", items:[
+    {title:["Set 3 · MCA aspiration + microcatheter","第 3 套 · MCA 抽吸取栓 + 微导管"], sub:["4 modules · not feasible with the devices found","4 个模块 · 现有器械做不到"], slots:[
+      {name:["Why it fails","为什么不行"], req:["",""], items:[], flag:["Once slack is counted, the k=3 microcatheter must be at least the k=2 catheter's length + 6 cm protrusion + 31 cm (g + L_m). With a 200 cm k=2 catheter that is 237 cm, and the longest microcatheter found is 200 cm (−37). It would only work for an average adult with a guide of 107–115 cm and a k=2 catheter of 155–163 cm, and none was found. Use Set 2.","计入余长后，k=3 的微导管至少要等于 k=2 导管的长度 + 6 cm 伸出长度 + 31 cm（g + L_m）。k=2 用 200 cm 的导管时就是 237 cm，而找到的最长微导管只有 200 cm，差 37 cm。只有平均身材、导引导管 107–115 cm、k=2 导管 155–163 cm 时才行得通，这样的器械没有找到。请用第 2 套。"]},
+      {name:["Devices found (kept for reference)","找到的器械（留作参考）"], req:["",""], items:[
         ["Surmodics Sublime 0.035\" × 200 cm, straight (expired)", D+"surmodics/sra-mc35-str200/sublime-microcatheter-200cm-straight-0035-box-of-1-expired/5851544"],
         ["Surmodics Sublime 0.018\" × 200 cm, straight (expired)", D+"surmodics/sra-mc18-str200/sublime-microcatheter-200cm-straight-0018-box-of-1-expired/5851601"],
         ["Surmodics Sublime 0.018\" × 200 cm, angled (expired)", D+"surmodics/sra-mc18-ang200/sublime-microcatheter-200cm-angled-0018-box-of-1-expired/5851553"]]}
     ]},
-    {title:"Set 4 · MCA aneurysm coiling with DAC", sub:"4 modules · not feasible with the devices found", slots:[
-      {name:"Why it fails", req:"", items:[], flag:"The coiling microcatheter at k=3 would need about 238 cm with a 200 cm DAC. With a 150 cm DAC (Quick-Cross Extreme), the DAC itself is 9 cm short. The DAC is optional for MCA coiling, so use Set 5."}
+    {title:["Set 4 · MCA aneurysm coiling with DAC","第 4 套 · 用 DAC 的 MCA 动脉瘤栓塞"], sub:["4 modules · not feasible with the devices found","4 个模块 · 现有器械做不到"], slots:[
+      {name:["Why it fails","为什么不行"], req:["",""], items:[], flag:["The coiling microcatheter at k=3 would need about 238 cm with a 200 cm DAC. With a 150 cm DAC (Quick-Cross Extreme), the DAC itself is 9 cm short. The DAC is optional for MCA coiling, so use Set 5.","DAC 用 200 cm 时，k=3 的栓塞微导管需要约 238 cm。DAC 换成 150 cm（Quick-Cross Extreme）时，DAC 自己又短 9 cm。MCA 栓塞本来就可以不用 DAC，请用第 5 套。"]}
     ]},
-    {title:"Set 5 · MCA aneurysm coiling without DAC", sub:"3 modules · works", slots:[
-      {name:"k=1 · 6F long guide sheath", req:"≥ 110 / 122 cm · 149 cm gives +39 / +27 · 119 cm gives +9 / −3 · same listings as Set 2", items:[]},
-      {name:"k=2 · 0.018\" coiling microcatheter", req:"≥ 196 / 196 cm with the 149 cm guide (≥ 166 / 169 with 119 cm)", items:[
+    {title:["Set 5 · MCA aneurysm coiling without DAC","第 5 套 · 不用 DAC 的 MCA 动脉瘤栓塞"], sub:["3 modules · works","3 个模块 · 可行"], slots:[
+      {name:["k=1 · 6F long guide sheath","k=1 · 6F 长导引鞘"], req:["≥ 110 / 122 cm · 149 cm gives +39 / +27 · 119 cm gives +9 / −3 · same listings as Set 2","≥ 110 / 122 cm · 149 cm 的余量为 +39 / +27 · 119 cm 为 +9 / −3 · 挂牌同第 2 套"], items:[]},
+      {name:["k=2 · 0.018\" coiling microcatheter","k=2 · 0.018\" 栓塞微导管"], req:["≥ 196 / 196 cm with the 149 cm guide (≥ 166 / 169 with 119 cm)","配 149 cm 导引鞘时 ≥ 196 / 196 cm（配 119 cm 时 ≥ 166 / 169）"], items:[
         ["Surmodics Sublime 0.018\" × 200 cm, straight (expired) · +4 / +4 with 149 cm guide, +34 / +31 with 119 cm", D+"surmodics/sra-mc18-str200/sublime-microcatheter-200cm-straight-0018-box-of-1-expired/5851601"],
-        ["Surmodics Sublime 0.018\" × 200 cm, angled (expired)", D+"surmodics/sra-mc18-ang200/sublime-microcatheter-200cm-angled-0018-box-of-1-expired/5851553"]], flag:"Cook requires a 0.018–0.025\" delivery lumen for 0.018\" Nester coils. Confirm the Sublime 0.018\" ID on the samples."},
-      {name:"k=3 · 0.014\" microwire for navigation", req:"≥ 237 cm incl. slack · 300 cm gives +63 / +63 · same listings as Set 2", items:[]},
-      {name:"k=3′ · coil pusher, swapped in after the microwire", req:"≥ 231 cm incl. slack · 0.018\" × 300 cm wire gives +69 / +69 · Boston Coil Pusher-16 (177 cm) is 54 cm short", items:[
+        ["Surmodics Sublime 0.018\" × 200 cm, angled (expired)", D+"surmodics/sra-mc18-ang200/sublime-microcatheter-200cm-angled-0018-box-of-1-expired/5851553"]], flag:["Cook requires a 0.018–0.025\" delivery lumen for 0.018\" Nester coils. Confirm the Sublime 0.018\" ID on the samples.","Cook 要求 0.018\" Nester 弹簧圈的输送内腔在 0.018–0.025\" 之间。Sublime 0.018\" 的 ID 请拿到样品后确认。"]},
+      {name:["k=3 · 0.014\" microwire for navigation","k=3 · 用于导航的 0.014\" 微导丝"], req:["≥ 237 cm incl. slack · 300 cm gives +63 / +63 · same listings as Set 2","≥ 237 cm（含余长）· 300 cm 的余量为 +63 / +63 · 挂牌同第 2 套"], items:[]},
+      {name:["k=3′ · coil pusher, swapped in after the microwire","k=3′ · coil pusher，撤出微导丝后换装"], req:["≥ 231 cm incl. slack · 0.018\" × 300 cm wire gives +69 / +69 · Boston Coil Pusher-16 (177 cm) is 54 cm short","≥ 231 cm（含余长）· 0.018\" × 300 cm 导丝的余量为 +69 / +69 · Boston Coil Pusher-16（177 cm）短 54 cm"], items:[
         ["Cook Roadrunner Extra Support 0.018\" × 300 cm, $42 (expired), same maker as Nester", D+"cook/g07640/roadrunner-extra-support-wire-guide-ptfe-0018-x-300cm/5920329"],
         ["Boston Scientific V-18 ControlWire 0.018\" × 300 cm, $49 (exp 2025-10)", D+"boston-scientific/46854-v-18-control-wire-0018-x-300cm-short-taper-straight-tip-guidewire-w-ice-hydrophilic-coating/m001468540-expired-2025-10/5911778"],
         ["Medtronic FMD Peripheral 0.018\" × 300 cm, straight, $45", D+"medtronic/f18f04st300/fmd-peripheral-guidewire-straight-0018-x-300cm/5909635"]]},
-      {name:"Coils · 0.018\" pushable", req:"4–8 mm for an MCA aneurysm phantom", items:[
+      {name:["Coils · 0.018\" pushable","弹簧圈 · 0.018\" 推送式"], req:["4–8 mm for an MCA aneurysm phantom","MCA 动脉瘤模型用 4–8 mm"], items:[
         ["Cook Nester G47328, 5 mm × 14 cm, $80 (exp 2029-09)", D+"cook/g47328/cook-g47328-nester-embolization-microcoil-5mm-14cm-0018/5759595"],
         ["Cook Nester G47330, 8 mm × 14 cm, $40 (exp 2026-05)", D+"cook/g47330-microcoil-nester-embolization-coil-0018-x-14cm-x-8mm/c2-2026-05-07/5652853"],
         ["Cook MicroNester G26989, 6 mm × 14 cm, $10", D+"cook-inc/g26989/micronester-embolization-coil/2831336"],
         ["Cook Tornado G47421, 8–4 mm × 9.5 cm, $396 (in date)", D+"cook/g47421/tornado-embolization-coil-0018-95cm-8-4mm-in-date/5860420"],
-        ["Boston Scientific VortX-18, 4 mm, box of 5, $50 (exp 2023-01)", D+"boston-scientific/m0013812041/box-of-5-vortx-18/4672969"]], flag:"Neuro detachable coils (Galaxy, Delta Plush 190 cm; GDC 175 cm) and the 177 cm Coil Pusher-16 cannot reach the k=3 module."}
+        ["Boston Scientific VortX-18, 4 mm, box of 5, $50 (exp 2023-01)", D+"boston-scientific/m0013812041/box-of-5-vortx-18/4672969"]], flag:["Neuro detachable coils (Galaxy, Delta Plush 190 cm; GDC 175 cm) and the 177 cm Coil Pusher-16 cannot reach the k=3 module.","神经介入可解脱弹簧圈（Galaxy、Delta Plush 190 cm；GDC 175 cm）和 177 cm 的 Coil Pusher-16 都够不到 k=3 模块。"]}
     ]}
   ];
+  function L2(x){ return Array.isArray(x) ? T(x[0], x[1]) : (x || ""); }
+  function renderSets(){
   var sh = "";
   SETS.forEach(function(s, si){
-    sh += '<details class="set"'+(si===4?' open':'')+'><summary>'+escapeHTML(s.title)+' <span class="note">'+escapeHTML(s.sub)+'</span></summary><div class="setbody">';
+    sh += '<details class="set"'+(si===4?' open':'')+'><summary>'+escapeHTML(L2(s.title))+' <span class="note">'+escapeHTML(L2(s.sub))+'</span></summary><div class="setbody">';
     s.slots.forEach(function(sl){
-      sh += '<div class="slot"><h4>'+escapeHTML(sl.name)+'<span class="req">'+escapeHTML(sl.req)+'</span></h4>';
+      sh += '<div class="slot"><h4>'+escapeHTML(L2(sl.name))+'<span class="req">'+escapeHTML(L2(sl.req))+'</span></h4>';
       if(sl.items.length){ sh += '<ul>'; sl.items.forEach(function(it){ sh += '<li><a href="'+it[1]+'" target="_blank" rel="noopener">'+escapeHTML(it[0])+'</a></li>'; }); sh += '</ul>'; }
-      if(sl.flag) sh += '<p class="flag">'+escapeHTML(sl.flag)+'</p>';
+      if(sl.flag) sh += '<p class="flag">'+escapeHTML(L2(sl.flag))+'</p>';
       sh += '</div>';
     });
     sh += '</div></details>';
   });
   $("sets").innerHTML = sh;
+  }
+  renderSets();
+
+  // ---------- language ----------
+  function applyLangAttrs(){
+    document.querySelectorAll("[data-en]").forEach(function(el){ el.textContent = T(el.getAttribute("data-en"), el.getAttribute("data-zh")); });
+    var lang = window.LWPI18N ? window.LWPI18N.lang() : "en";
+    document.querySelectorAll("[data-set-lang]").forEach(function(btn){ btn.setAttribute("aria-pressed", String(btn.getAttribute("data-set-lang") === lang)); });
+  }
+  document.querySelectorAll("[data-set-lang]").forEach(function(btn){
+    btn.addEventListener("click", function(){ if(window.LWPI18N) window.LWPI18N.set(btn.getAttribute("data-set-lang")); });
+  });
+  if(window.LWPI18N) window.LWPI18N.on(function(){ applyLangAttrs(); renderParams(); renderRows(); update(); renderSets(); });
+  applyLangAttrs();
 
   // ---------- boot ----------
   state = load();
@@ -907,13 +977,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   var host = document.getElementById("viewer");
   var msg = document.getElementById("viewer-msg");
   var labelsEl = document.getElementById("labels");
+  function T(en, zh){ return window.LWPI18N ? window.LWPI18N.T(en, zh) : en; }
   function fail(t){ msg.textContent = t; msg.hidden = false; }
   if(!host || !PATH) return;
-  if(!window.THREE || !THREE.GLTFLoader || !THREE.OrbitControls){ fail("The 3D view needs the three.js library, which did not load. Check your connection and reload."); return; }
+  if(!window.THREE || !THREE.GLTFLoader || !THREE.OrbitControls){ fail(T("The 3D view needs the three.js library, which did not load. Check your connection and reload.", "3D 视图需要的 three.js 没有加载成功，请检查网络后刷新。")); return; }
 
   function css(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || "#888"; }
   var renderer;
-  try{ renderer = new THREE.WebGLRenderer({antialias:true}); }catch(e){ fail("WebGL is not available in this browser, so the 3D view cannot be shown."); return; }
+  try{ renderer = new THREE.WebGLRenderer({antialias:true}); }catch(e){ fail(T("WebGL is not available in this browser, so the 3D view cannot be shown.", "这个浏览器不支持 WebGL，无法显示 3D 视图。")); return; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   host.insertBefore(renderer.domElement, host.firstChild);
 
@@ -960,18 +1031,19 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   }
 
   var SEGS = [
-    {a:"m1_face",    b:"arc1_start", name:"Guide-catheter module"},
-    {a:"arc1_start", b:"guide_hub",  name:"U-turn 1"},
-    {a:"guide_hub",  b:"arc2_start", name:"Microcatheter module"},
-    {a:"arc2_start", b:"micro_hub",  name:"U-turn 2"},
-    {a:"micro_hub",  b:"m3_exit",    name:"Guidewire module"}
+    {a:"m1_face",    b:"arc1_start", en:"Guide-catheter module", zh:"导引导管模块"},
+    {a:"arc1_start", b:"guide_hub",  en:"U-turn 1", zh:"U-turn 1"},
+    {a:"guide_hub",  b:"arc2_start", en:"Microcatheter module", zh:"微导管模块"},
+    {a:"arc2_start", b:"micro_hub",  en:"U-turn 2", zh:"U-turn 2"},
+    {a:"micro_hub",  b:"m3_exit",    en:"Guidewire module", zh:"导丝模块"}
   ];
-  SEGS.forEach(function(sg){ sg.len = S[sg.b] - S[sg.a]; sg.mid = at((S[sg.a] + S[sg.b]) / 2); });
+  SEGS.forEach(function(sg){ sg.len = S[sg.b] - S[sg.a]; sg.mid = at((S[sg.a] + S[sg.b]) / 2); sg.isArc = /U-turn/.test(sg.en); });
+  function segName(sg){ return T(sg.en, sg.zh); }
 
   var INST = [
-    {key:"guide", name:"Guide catheter", end:"guide_hub", r:1.7, token:"--c-guide", k:1},
-    {key:"micro", name:"Microcatheter",  end:"micro_hub", r:1.05, token:"--c-micro", k:2},
-    {key:"wire",  name:"Guidewire",      end:"m3_exit",   r:0.5, token:"--c-wire",  k:3}
+    {key:"guide", en:"Guide catheter", zh:"导引导管", end:"guide_hub", r:1.7, token:"--c-guide", k:1},
+    {key:"micro", en:"Microcatheter",  zh:"微导管", end:"micro_hub", r:1.05, token:"--c-micro", k:2},
+    {key:"wire",  en:"Guidewire",      zh:"导丝", end:"m3_exit",   r:0.5, token:"--c-wire",  k:3}
   ];
   var instGroup = new THREE.Group(); scene.add(instGroup);
   INST.forEach(function(it){
@@ -991,7 +1063,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   var catMats = {};
   function loadRobot(){
     var el = document.getElementById("robot-glb");
-    if(!el){ fail("The robot model is missing from this page."); return; }
+    if(!el){ fail(T("The robot model is missing from this page.", "页面里缺少机器人模型。")); return; }
     var bin = atob(el.textContent.trim());
     var u8 = new Uint8Array(bin.length);
     for(var i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
@@ -1023,7 +1095,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
       setBoxFromRobot();
       msg.hidden = true;
       applyTheme(); applyXray();
-    }, function(){ fail("The robot model could not be read."); });
+    }, function(){ fail(T("The robot model could not be read.", "机器人模型读取失败。")); });
   }
 
   // ---------- callout labels ----------
@@ -1034,23 +1106,25 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   labelsEl.appendChild(svg);
   var tags = [];
   function addTag(pos, html, cls, key){
-    var el = document.createElement("div"); el.className = "tag " + (cls || ""); el.innerHTML = html;
+    var el = document.createElement("div"); el.className = "tag " + (cls || ""); el.innerHTML = html();
     labelsEl.appendChild(el);
     var line = document.createElementNS(SVGNS, "polyline"); line.setAttribute("class", "leader " + (cls || "")); line.setAttribute("marker-end", "url(#lwp-arrow)");
     svg.appendChild(line);
     var dot = document.createElementNS(SVGNS, "circle"); dot.setAttribute("r", "2.5"); dot.setAttribute("class", "anchor " + (cls || ""));
     svg.appendChild(dot);
-    tags.push({el:el, line:line, dot:dot, pos:pos, key:key});
+    tags.push({el:el, line:line, dot:dot, pos:pos, key:key, html:html});
   }
   SEGS.forEach(function(sg, i){
-    var isArc = /U-turn/.test(sg.name);
-    var anchor = isArc ? sg.mid : at(S[sg.a] + (S[sg.b] - S[sg.a]) * 0.35);
-    addTag(anchor, '<span class="t">' + sg.name + (isArc ? ' <i>(CAD sketch, adjustable)</i>' : '') + '</span><span class="loss">' + Math.round(sg.len) + ' mm lost</span>', "seg", i);
+    var anchor = sg.isArc ? sg.mid : at(S[sg.a] + (S[sg.b] - S[sg.a]) * 0.35);
+    addTag(anchor, function(){
+      return '<span class="t">' + segName(sg) + (sg.isArc ? ' <i>' + T("(CAD sketch, adjustable)", "（CAD 示意，可调）") + '</i>' : '') + '</span><span class="loss">' + T(Math.round(sg.len) + ' mm lost', '损失 ' + Math.round(sg.len) + ' mm') + '</span>';
+    }, "seg", i);
   });
-  addTag(at(40), '<span class="t">To patient</span>', "plain", null);
-  addTag(at(S.guide_hub), '<span class="t">Guide catheter hub</span><span class="sub">its loss ends here</span>', "hub", "hub-guide");
-  addTag(at(S.micro_hub), '<span class="t">Microcatheter hub</span><span class="sub">its loss ends here</span>', "hub", "hub-micro");
-  addTag(at(S.m3_exit + 90), '<span class="t">Guidewire tail</span><span class="sub">to torque device</span>', "plain", null);
+  addTag(at(40), function(){ return '<span class="t">' + T("To patient", "通向患者") + '</span>'; }, "plain", null);
+  addTag(at(S.guide_hub), function(){ return '<span class="t">' + T("Guide catheter hub", "导引导管 hub") + '</span><span class="sub">' + T("its loss ends here", "损失到这里为止") + '</span>'; }, "hub", "hub-guide");
+  addTag(at(S.micro_hub), function(){ return '<span class="t">' + T("Microcatheter hub", "微导管 hub") + '</span><span class="sub">' + T("its loss ends here", "损失到这里为止") + '</span>'; }, "hub", "hub-micro");
+  addTag(at(S.m3_exit + 90), function(){ return '<span class="t">' + T("Guidewire tail", "导丝尾端") + '</span><span class="sub">' + T("to torque device", "接扭控器") + '</span>'; }, "plain", null);
+  function retag(){ tags.forEach(function(t){ t.el.innerHTML = t.html(); }); }
 
   var focus = "all";
   var v3 = new THREE.Vector3();
@@ -1143,12 +1217,12 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     var h = "";
     SEGS.forEach(function(sg, i){
       var cls = it ? (i < it.segs.length ? "on" : "dim") : "";
-      h += '<tr class="' + cls + '"><td>' + sg.name + '</td><td class="n">' + mm(sg.len) + '</td></tr>';
+      h += '<tr class="' + cls + '"><td>' + segName(sg) + '</td><td class="n">' + mm(sg.len) + '</td></tr>';
     });
     if(it){
-      h += '<tr class="total"><td><b>' + it.name + ' lost inside robot</b></td><td class="n"><b>' + mm(it.loss) + '</b></td></tr>';
+      h += '<tr class="total"><td><b>' + T(it.en + ' lost inside robot', it.zh + '在机器人内的损失') + '</b></td><td class="n"><b>' + mm(it.loss) + '</b></td></tr>';
     } else {
-      INST.forEach(function(x, j){ h += '<tr class="' + (j === 0 ? "total" : "") + '"><td>' + x.name + ' lost inside robot</td><td class="n">' + mm(x.loss) + '</td></tr>'; });
+      INST.forEach(function(x, j){ h += '<tr class="' + (j === 0 ? "total" : "") + '"><td>' + T(x.en + ' lost inside robot', x.zh + '在机器人内的损失') + '</td><td class="n">' + mm(x.loss) + '</td></tr>'; });
     }
     document.getElementById("cadtable").innerHTML = h;
     renderCompare();
@@ -1161,11 +1235,12 @@ input[type=range]{width:100%;accent-color:var(--accent)}
     var rows = INST.map(function(it){
       var gaps = (it.k - 1) + ((st.hub === "after" && it.k < n) ? 1 : 0);
       var f = it.k * lm + gaps * g;
-      return '<tr><td>' + it.name + '</td><td>' + mm(it.loss) + '</td><td>' + (isFinite(f) ? mm(f) : "—") + '</td><td>' + (isFinite(f) ? ((f - it.loss >= 0 ? "+" : "") + mm(f - it.loss)) : "—") + '</td></tr>';
+      return '<tr><td>' + T(it.en, it.zh) + '</td><td>' + mm(it.loss) + '</td><td>' + (isFinite(f) ? mm(f) : "—") + '</td><td>' + (isFinite(f) ? ((f - it.loss >= 0 ? "+" : "") + mm(f - it.loss)) : "—") + '</td></tr>';
     }).join("");
-    box.innerHTML = '<span class="label">CAD vs. calculator settings</span><div class="cmp"><table><tr><th>Instrument</th><th>CAD</th><th>Formula</th><th>Diff</th></tr>' + rows + '</table>' +
-      '<p class="note">Formula uses L<sub>m</sub> = ' + (lm/10) + ' cm, g = ' + (g/10) + ' cm, hub ' + (st.hub === "after" ? "after the next U-turn" : "at own module exit") + '. The three module paths differ (176 / 232 / 226 mm) because the Luer adapters add length, so a single L<sub>m</sub> is an average.</p>' +
-      '<button type="button" class="btn primary" id="x-apply">Use CAD values in calculator</button></div>';
+    box.innerHTML = '<span class="label">' + T("CAD vs. calculator settings", "CAD 与计算器设置对比") + '</span><div class="cmp"><table><tr><th>' + T("Instrument", "器械") + '</th><th>CAD</th><th>' + T("Formula", "公式") + '</th><th>' + T("Diff", "差值") + '</th></tr>' + rows + '</table>' +
+      '<p class="note">' + T('Formula uses L<sub>m</sub> = ' + (lm/10) + ' cm, g = ' + (g/10) + ' cm, hub ' + (st.hub === "after" ? "after the next U-turn" : "at own module exit") + '. The three module paths differ (176 / 232 / 226 mm) because the Luer adapters add length, so a single L<sub>m</sub> is an average.',
+        '公式按 L<sub>m</sub> = ' + (lm/10) + ' cm、g = ' + (g/10) + ' cm 计算，hub ' + (st.hub === "after" ? "装在下一个 U-turn 之后" : "装在本模块出口") + '。三个模块内的路径长度不一样（176 / 232 / 226 mm），因为 Luer 接头会多占一段，所以单个 L<sub>m</sub> 只是平均值。') + '</p>' +
+      '<button type="button" class="btn primary" id="x-apply">' + T("Use CAD values in calculator", "把 CAD 数值用到计算器") + '</button></div>';
     document.getElementById("x-apply").addEventListener("click", function(){
       window.LWP.set({lm: Math.round((SEGS[0].len + SEGS[2].len + SEGS[4].len) / 3) / 10, g: Math.round((SEGS[1].len + SEGS[3].len) / 2) / 10, hub: "after"});
     });
@@ -1178,6 +1253,7 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   document.getElementById("x-ray").addEventListener("input", applyXray);
   document.getElementById("x-reset").addEventListener("click", resetView);
   if(window.LWP) window.LWP.onUpdate(function(){ renderCompare(); });
+  if(window.LWPI18N) window.LWPI18N.on(function(){ retag(); renderSide(); });
   try{ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme); }catch(e){}
   try{ new MutationObserver(applyTheme).observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]}); }catch(e){}
 
@@ -1191,6 +1267,17 @@ input[type=range]{width:100%;accent-color:var(--accent)}
   resize(); resetView(); applyTheme();
   (function loop(){ requestAnimationFrame(loop); controls.update(); renderer.render(scene, camera); placeTags(); })();
   setTimeout(loadRobot, 0);
+})();
+</script>
+<script>
+/* Carry the language choice back to the homepage. */
+(function(){
+  function sync(l){
+    var home = document.getElementById("home-link"), notes = document.getElementById("notes-link");
+    if(home) home.href = "https://sazabi06.github.io/?lang=" + l;
+    if(notes) notes.href = "https://sazabi06.github.io/?lang=" + l + "#writing-title";
+  }
+  if(window.LWPI18N){ sync(window.LWPI18N.lang()); window.LWPI18N.on(sync); }
 })();
 </script>
 </body>
