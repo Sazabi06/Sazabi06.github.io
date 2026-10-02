@@ -58,12 +58,14 @@ header.top{display:flex;flex-direction:column;gap:10px;max-width:80ch}
 header.top .formula{font-family:var(--font-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 12px;display:inline-block;align-self:flex-start;max-width:100%;overflow-x:auto;white-space:nowrap}
 .lede{color:var(--muted);max-width:75ch}
 
-.main{display:grid;grid-template-columns:330px minmax(0,1fr);gap:24px;align-items:start}
-@media (max-width:960px){.main{grid-template-columns:minmax(0,1fr)}}
+.main{display:flex;flex-direction:column;gap:20px}
 
-.rail{display:flex;flex-direction:column;gap:18px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px}
+.rail{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px 0}
+.rail > .group{padding:0 22px}
+.rail > .group + .group{border-left:1px solid var(--line)}
+@media (max-width:960px){.rail{grid-template-columns:minmax(0,1fr);gap:18px}.rail > .group + .group{border-left:0;border-top:1px solid var(--line);padding-top:16px}}
 .group{display:flex;flex-direction:column;gap:10px}
-.group + .group{border-top:1px solid var(--line);padding-top:16px}
+.cadside .group + .group{border-top:1px solid var(--line);padding-top:16px}
 .field{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:8px;align-items:center}
 .field label{font-size:13px}
 .field small{display:block;color:var(--muted);font-size:11.5px;line-height:1.35}
@@ -95,7 +97,7 @@ details.lm summary{cursor:pointer;font-size:13px;font-weight:600}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .panelhead{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
 .scroll{overflow-x:auto;min-width:0}
-table.calc{border-collapse:collapse;width:100%;min-width:1280px;font-size:13px}
+table.calc{border-collapse:collapse;width:100%;min-width:1040px;font-size:13px}
 table.calc th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line-strong);vertical-align:bottom}
 table.calc td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 table.calc td.n{font-family:var(--font-mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
@@ -193,6 +195,46 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .cmp td:first-child{text-align:left;font-family:var(--font-body)}
 @media (prefers-reduced-motion:no-preference){.seg-b{transition:left .2s ease,width .2s ease}}
 
+/* Core formula card */
+.fcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:16px}
+.fcard-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.fcard-head h2{font-size:20px}
+.fcard-head .sub{color:var(--muted);font-size:13.5px}
+.eq{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px 8px}
+.term{display:flex;flex-direction:column;gap:6px;padding:10px 14px 9px;border-radius:8px;background:var(--bg);border-top:4px solid var(--ink);min-width:0}
+.term b{font-family:var(--font-display);font-weight:700;font-size:clamp(20px,2.3vw,28px);line-height:1.15;white-space:nowrap}
+.term small{font-size:12.5px;color:var(--muted);line-height:1.3}
+.term.t-body{border-top-color:var(--seg-body)} .term.t-ext{border-top-color:var(--seg-ext)} .term.t-robot{border-top-color:var(--seg-robot)} .term.t-slack{border-top-color:var(--seg-slack)}
+.op{align-self:center;font-family:var(--font-display);font-size:clamp(20px,2.3vw,28px);color:var(--muted);padding:0 2px}
+.eq-check{font-size:14.5px}
+.eq-check b{font-family:var(--font-display)}
+.live{border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px}
+.live-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:13px;color:var(--muted)}
+.kchips{display:flex;flex-wrap:wrap;gap:6px}
+.kchips button{font:inherit;font-size:12.5px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:3px 11px;cursor:pointer}
+.kchips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.live-eq{font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:clamp(15px,1.6vw,19px);display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;line-height:1.5}
+.live-eq .v{padding:1px 6px;border-radius:4px;background:var(--bg);border-bottom:3px solid var(--ink)}
+.live-eq .v.t-body{border-bottom-color:var(--seg-body)} .live-eq .v.t-ext{border-bottom-color:var(--seg-ext)} .live-eq .v.t-robot{border-bottom-color:var(--seg-robot)} .live-eq .v.t-slack{border-bottom-color:var(--seg-slack)}
+.live-eq .res{display:inline-flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.live-name{font-size:14px}
+.live-eq .res .chip{font-size:clamp(15px,1.6vw,19px);padding:2px 12px;font-weight:600}
+/* Anatomy switch above the results */
+.viewbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.viewbar .seg{min-width:260px}
+/* Table rows carry their status on the left edge */
+#tbody tr.row-bad td:first-child{box-shadow:inset 4px 0 0 var(--bad)}
+#tbody tr.row-warn td:first-child{box-shadow:inset 4px 0 0 var(--warn)}
+#tbody tr.row-ok td:first-child{box-shadow:inset 4px 0 0 var(--ok)}
+#tbody tr.row-sel td{background:var(--accent-soft)}
+#tbody tr{cursor:pointer}
+table.calc td.n .chip{font-size:13px;padding:2px 9px}
+.tgt{display:flex;flex-direction:column;gap:4px;min-width:180px}
+.tgt .off{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.odfit{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+details.howto summary{cursor:pointer;font-size:12.5px;color:var(--accent)}
+details.howto p{margin-top:6px}
+
 /* Note styling: matches sazabi06.github.io (Helvetica, #fafafa paper, slate accent). */
 [hidden]{display:none!important}
 .note-top{display:flex;flex-direction:column;gap:28px}
@@ -259,10 +301,26 @@ html[data-lang="zh"] .intro{line-height:1.9}
       </div>
       <div class="intro">
         <p><span data-l="en">An endovascular robot that grips catheters and guidewires outside the patient has a hidden cost. Every centimetre of an instrument held inside the robot can never enter the patient. Neurovascular devices are sized for hand use, with only about 5–15 cm to spare at the proximal end, so this loss often decides whether an instrument reaches its target at all.</span><span data-l="zh" lang="zh-CN">血管介入机器人在患者体外夹持导管和导丝。器械留在机器人里的那一段，永远进不了患者体内。神经介入器械的长度是按手工操作设计的，近端通常只富余 5–15 cm，所以这段损失常常决定了器械能不能到达目标。</span></p><p><span data-l="en">With coaxial instruments in a modular robot such as our LegoBot, the loss compounds. The instrument gripped by the <i>k</i>-th module from the patient passes through <i>k</i> modules and the <i>k</i>−1 gaps between them. If an outer catheter is longer than it needs to be, its extra length is passed on to every instrument inside it. With 19 cm modules and 12 cm gaps, a 132 cm aspiration catheter driven by the second module reaches only the carotid bifurcation, not the MCA.</span><span data-l="zh" lang="zh-CN">在 LegoBot 这样的模块化机器人里，器械一根套一根，损失会逐层累加。从患者一侧数，第 <i>k</i> 个模块夹持的器械要穿过 <i>k</i> 个模块，以及它们之间的 <i>k</i>−1 段间隙。外层导管如果比需要的长，多出来的长度还会转给套在里面的每一根器械。按每个模块 19 cm、间隙 12 cm 算，由第二个模块驱动的 132 cm 抽吸导管只能到颈动脉分叉，到不了大脑中动脉。</span></p><p><span data-l="en">Checking a device set by hand means tracking, for every instrument, the length left inside the robot, the slack inherited from outer layers, where its tip must end up, and the vessel path length from the access site to that point. This page does that bookkeeping. Set your robot's geometry, access route and device stack, and it reports each instrument's required length, its margin and the deepest landmark it can reach. LegoBot (Gao et al., IEEE/ASME T-MECH 2026) is the worked example; for other proximally driven robots, including cassette-based systems, set the module length and gap to match your drive.</span><span data-l="zh" lang="zh-CN">手工核算一套器械，每一根都要算清四个量：留在机器人里的长度、从外层继承的余长、头端最终停在哪里，以及从穿刺点到那里的血管路径长度。这个页面替你算这笔账。填入机器人的几何参数、入路和器械组合，页面会给出每根器械所需的长度、余量，以及它最深能到达的解剖位置。示例用的是 LegoBot（Gao 等，IEEE/ASME T-MECH 2026）。其他在近端驱动器械的机器人，包括卡盒式系统，把模块长度和间隙换成自己驱动装置的数值就可以用。</span></p>
-        <span class="formula"><span data-l="en">Required length<sub>k</sub> = depth to target + sheath hub + free span + k·L<sub>m</sub> + (k−1)·g + slack of outer catheters</span><span data-l="zh" lang="zh-CN">所需长度<sub>k</sub> = 体内深度 + 鞘 hub + 游离段 + k·L<sub>m</sub> + (k−1)·g + 外层导管余长</span></span>
       </div>
     </div>
   </header>
+
+  <section class="fcard" aria-label="Core formula">
+    <div class="fcard-head"><h2><span data-l="en">The core formula</span><span data-l="zh" lang="zh-CN">核心公式</span></h2><span class="sub"><span data-l="en">For the instrument gripped by the k-th module, counted from the patient</span><span data-l="zh" lang="zh-CN">对从患者一侧数第 k 个模块夹持的器械</span></span></div>
+    <div class="eq">
+      <span class="term"><b>L<sub>required</sub></b><small><span data-l="en">Required length</span><span data-l="zh" lang="zh-CN">所需长度</span></small></span>
+      <span class="op">=</span>
+      <span class="term t-body"><b>D</b><small><span data-l="en">Depth to target</span><span data-l="zh" lang="zh-CN">到目标的体内深度</span></small></span>
+      <span class="op">+</span>
+      <span class="term t-ext"><b>h + s</b><small><span data-l="en">Sheath hub + free span</span><span data-l="zh" lang="zh-CN">鞘 hub + 游离段</span></small></span>
+      <span class="op">+</span>
+      <span class="term t-robot"><b>k·L<sub>m</sub> + (k−1)·g</b><small><span data-l="en">Lost inside the robot</span><span data-l="zh" lang="zh-CN">损失在机器人内</span></small></span>
+      <span class="op">+</span>
+      <span class="term t-slack"><b>Σ slack</b><small><span data-l="en">Extra length of longer outer catheters</span><span data-l="zh" lang="zh-CN">外层导管多出的长度</span></small></span>
+    </div>
+    <p class="eq-check"><span data-l="en">An instrument reaches its target only if <b>L<sub>device</sub> ≥ L<sub>required</sub></b>. Margin = L<sub>device</sub> − L<sub>required</sub>.</span><span data-l="zh" lang="zh-CN">器械长度 <b>L<sub>device</sub> ≥ L<sub>required</sub></b> 时，器械才能到达目标。余量 = L<sub>device</sub> − L<sub>required</sub>。</span></p>
+    <div class="live" id="fc-live"></div>
+  </section>
 
   <div class="main">
     <aside class="rail" aria-label="Parameters">
@@ -319,6 +377,14 @@ html[data-lang="zh"] .intro{line-height:1.9}
     </aside>
 
     <section class="results" aria-label="Results">
+      <div class="viewbar">
+        <span class="label"><span data-l="en">Patient</span><span data-l="zh" lang="zh-CN">患者</span></span>
+        <div class="seg" role="group" aria-label="Patient anatomy">
+          <button type="button" id="v-avg" data-view="avg" data-en="Average adult" data-zh="平均身材">Average adult</button>
+          <button type="button" id="v-tall" data-view="tall" data-en="Tall / Type III arch" data-zh="高个子 / III 型弓">Tall / Type III arch</button>
+        </div>
+        <span class="note"><span data-l="en">The formula example, table and bars follow this choice. The first two cards show both.</span><span data-l="zh" lang="zh-CN">公式示例、表格和长度条按这里的选择显示，前两张卡片两种情况都列出。</span></span>
+      </div>
       <div class="summary" id="summary"></div>
 
       <div class="panel">
@@ -330,12 +396,13 @@ html[data-lang="zh"] .intro{line-height:1.9}
             <button type="button" class="btn primary" id="b-copy" data-en="Copy table" data-zh="复制表格">Copy table</button>
           </div>
         </div>
-        <p class="note"><span data-l="en">k = position of the gripping module counted from the patient. Lengths in cm. Pairs read average / tall-or-Type III. Required includes slack carried from outer catheters that are longer than needed. Margin = device length − required length; green ≥ 5, amber 0–5, red &lt; 0. Pick a model from the device library to fill in its name, length and OD/ID, or type them in directly. A blank OD or ID means it was not verified. Tick "swap" for an instrument loaded into the same module after the one above is withdrawn, such as a coil pusher replacing the microwire. OD/ID in inches; the fit column checks this layer's OD against the ID of the layer outside it.</span><span data-l="zh" lang="zh-CN">k 是夹持这根器械的模块，从患者一侧数起。成对的数字依次对应平均身材和高个子或 III 型弓。所需长度已包含外层导管多出的余长。余量 = 器械长度 − 所需长度；绿色 ≥ 5，黄色 0–5，红色 &lt; 0。可以从器械库里选型号，自动填好名称、长度和 OD/ID，也可以直接输入。OD 或 ID 空着，表示没有核实过。如果一根器械要等上一行的器械撤出后才装进同一个模块（比如替换微导丝的 coil pusher），请勾选“换装”。OD/ID 的单位是英寸；“能否套入”检查本层的 OD 是否小于外面一层的 ID。</span></p>
+        <p class="note"><span data-l="en">One row per instrument, from the outermost (k = 1) inward. Pick a model from the device library or type its length. Margin: green ≥ 5 cm, amber 0–5 cm, red = too short. Click a row to plug it into the formula above.</span><span data-l="zh" lang="zh-CN">每行一根器械，从最外层（k = 1）往里排。可以从器械库选型号，也可以直接输入长度。余量：绿色 ≥ 5 cm，黄色 0–5 cm，红色表示不够长。点击某一行，上方公式会代入这一行的数。</span></p>
+        <details class="howto"><summary><span data-l="en">More about the columns</span><span data-l="zh" lang="zh-CN">各列的含义</span></summary><p class="note"><span data-l="en">Required already includes the slack of outer catheters that are longer than needed. A blank OD or ID means it was not verified. Tick "swap" for an instrument loaded into the same module after the one above is withdrawn, such as a coil pusher replacing the microwire. OD/ID are in inches; the chip under them checks this layer's OD against the ID of the layer outside it. Max L<sub>m</sub> is the longest module that would still let this instrument reach.</span><span data-l="zh" lang="zh-CN">所需长度已包含外层导管多出的余长。OD 或 ID 空着，表示没有核实过。如果一根器械要等上一行的器械撤出后才装进同一个模块（比如替换微导丝的 coil pusher），请勾选“换装”。OD/ID 的单位是英寸，下方的标签检查本层 OD 是否小于外面一层的 ID。L<sub>m</sub> 上限是这根器械仍能到位时，模块最长可以是多少。</span></p></details>
         <div class="scroll">
           <table class="calc" id="calc">
             <thead>
               <tr>
-                <th>k</th><th><span data-l="en">Instrument</span><span data-l="zh" lang="zh-CN">器械</span></th><th><span data-l="en">Target</span><span data-l="zh" lang="zh-CN">目标</span></th><th class="n"><span data-l="en">Offset</span><span data-l="zh" lang="zh-CN">偏移</span><span class="u">cm</span></th><th class="n"><span data-l="en">Depth</span><span data-l="zh" lang="zh-CN">体内深度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Robot loss</span><span data-l="zh" lang="zh-CN">机器人内损失</span><span class="u">cm</span></th><th class="n"><span data-l="en">Outer slack</span><span data-l="zh" lang="zh-CN">外层余长</span><span class="u">cm</span></th><th class="n"><span data-l="en">Required</span><span data-l="zh" lang="zh-CN">所需长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Device length</span><span data-l="zh" lang="zh-CN">器械长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Margin</span><span data-l="zh" lang="zh-CN">余量</span><span class="u">cm</span></th><th><span data-l="en">Reach (avg)</span><span data-l="zh" lang="zh-CN">可达位置（平均）</span></th><th class="n"><span data-l="en">Max L<sub>m</sub></span><span data-l="zh" lang="zh-CN">L<sub>m</sub> 上限</span><span class="u">cm</span></th><th class="n">OD / ID<span class="u"><span data-l="en">inch</span><span data-l="zh" lang="zh-CN">英寸</span></span></th><th><span data-l="en">Fit</span><span data-l="zh" lang="zh-CN">能否套入</span></th>
+                <th>k</th><th><span data-l="en">Instrument</span><span data-l="zh" lang="zh-CN">器械</span></th><th><span data-l="en">Target · offset</span><span data-l="zh" lang="zh-CN">目标 · 偏移</span></th><th class="n"><span data-l="en">Depth</span><span data-l="zh" lang="zh-CN">体内深度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Robot loss</span><span data-l="zh" lang="zh-CN">机器人内损失</span><span class="u">cm</span></th><th class="n"><span data-l="en">Outer slack</span><span data-l="zh" lang="zh-CN">外层余长</span><span class="u">cm</span></th><th class="n"><span data-l="en">Required</span><span data-l="zh" lang="zh-CN">所需长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Device length</span><span data-l="zh" lang="zh-CN">器械长度</span><span class="u">cm</span></th><th class="n"><span data-l="en">Margin</span><span data-l="zh" lang="zh-CN">余量</span><span class="u">cm</span></th><th><span data-l="en">Reaches</span><span data-l="zh" lang="zh-CN">可达位置</span></th><th class="n"><span data-l="en">Max L<sub>m</sub></span><span data-l="zh" lang="zh-CN">L<sub>m</sub> 上限</span><span class="u">cm</span></th><th class="n"><span data-l="en">OD / ID · fit</span><span data-l="zh" lang="zh-CN">OD / ID · 能否套入</span><span class="u"><span data-l="en">inch</span><span data-l="zh" lang="zh-CN">英寸</span></span></th>
               </tr>
             </thead>
             <tbody id="tbody"></tbody>
@@ -347,10 +414,6 @@ html[data-lang="zh"] .intro{line-height:1.9}
       <div class="panel">
         <div class="panelhead">
           <h2><span data-l="en">Where each instrument's length goes</span><span data-l="zh" lang="zh-CN">每根器械的长度用在了哪里</span></h2>
-          <div class="seg" role="group" aria-label="Anatomy for bars" style="min-width:230px">
-            <button type="button" id="v-avg" data-view="avg" data-en="Average" data-zh="平均身材">Average</button>
-            <button type="button" id="v-tall" data-view="tall" data-en="Tall / Type III" data-zh="高个子 / III 型弓">Tall / Type III</button>
-          </div>
         </div>
         <div class="legend">
           <span><i style="background:var(--seg-body)"></i><span data-l="en">Inside the patient</span><span data-l="zh" lang="zh-CN">患者体内</span></span>
@@ -653,7 +716,7 @@ html[data-lang="zh"] .intro{line-height:1.9}
         var oid = num(primary[k-1].id), iod = num(r.od);
         if(isFinite(oid) && isFinite(iod)) fit = oid - iod;
       }
-      return {k:k, swap:swap, D:D, Dt:Dt, loss:loss, ext:ext, L:L, cA:cA, cT:cT, reqA:reqA, reqT:reqT, mA:mA, mT:mT, reach:L - ext - loss - cA, fit:fit};
+      return {k:k, swap:swap, gaps:gaps, D:D, Dt:Dt, loss:loss, ext:ext, L:L, cA:cA, cT:cT, reqA:reqA, reqT:reqT, mA:mA, mT:mT, reach:L - ext - loss - cA, reachT:L - ext - loss - cT, fit:fit};
     });
   }
   // Largest module length L_m (0-60 cm) for which each row, and all rows together, still reach.
@@ -727,8 +790,11 @@ html[data-lang="zh"] .intro{line-height:1.9}
         update();
       }));
       box.appendChild(cellInput("text", r.name, "", function(v){ r.name=v; update(); }, {id:"r"+i+"-name","aria-label":"Instrument "+(i+1)}));
-      td().appendChild(cellInput("select", r.target, "", function(v){ r.target=v; update(); }, {id:"r"+i+"-target","aria-label":"Target "+(i+1)}));
-      td("n").appendChild(cellInput("number", r.off, "w2", function(v){ r.off=num(v); update(); }, {id:"r"+i+"-off",step:"1","aria-label":"Offset beyond target, cm"}));
+      var tg = document.createElement("div"); tg.className = "tgt"; td().appendChild(tg);
+      tg.appendChild(cellInput("select", r.target, "", function(v){ r.target=v; update(); }, {id:"r"+i+"-target","aria-label":"Target "+(i+1)}));
+      var off = document.createElement("label"); off.className = "off"; off.appendChild(document.createTextNode(T("beyond target +", "超出目标 +")));
+      off.appendChild(cellInput("number", r.off, "w2", function(v){ r.off=num(v); update(); }, {id:"r"+i+"-off",step:"1","aria-label":"Offset beyond target, cm"}));
+      off.appendChild(document.createTextNode("cm")); tg.appendChild(off);
       td("n").id = "c"+i+"-depth";
       td("n").id = "c"+i+"-loss";
       td("n").id = "c"+i+"-carry";
@@ -737,13 +803,17 @@ html[data-lang="zh"] .intro{line-height:1.9}
       td("n").id = "c"+i+"-margin";
       td().id = "c"+i+"-reach";
       td("n").id = "c"+i+"-lmmax";
-      var odid = td("n");
+      var odid = td("n"); var odbox = document.createElement("div"); odbox.className = "odfit"; odid.appendChild(odbox);
       var wrap = document.createElement("span"); wrap.className="pair";
       wrap.appendChild(cellInput("number", r.od, "w2", function(v){ r.od = v===""?null:num(v); update(); }, {id:"r"+i+"-od",step:"0.001",placeholder:"OD","aria-label":"Outer diameter, inch"}));
       var sl = document.createElement("span"); sl.className="sep"; sl.textContent="/"; wrap.appendChild(sl);
       wrap.appendChild(cellInput("number", r.id, "w2", function(v){ r.id = v===""?null:num(v); update(); }, {id:"r"+i+"-id",step:"0.001",placeholder:"ID","aria-label":"Inner diameter, inch"}));
-      odid.appendChild(wrap);
-      td().id = "c"+i+"-fit";
+      odbox.appendChild(wrap);
+      var fitc = document.createElement("span"); fitc.id = "c"+i+"-fit"; odbox.appendChild(fitc);
+      tr.addEventListener("click", function(e){
+        if(e.target.closest("input,select,label,button")) return;
+        state.fk = i; update();
+      });
       tb.appendChild(tr);
     });
   }
@@ -756,21 +826,27 @@ html[data-lang="zh"] .intro{line-height:1.9}
   function update(){
     var res = compute();
     var scan = lmScan();
+    var tall = state.view === "tall";
+    if(!(state.fk >= 0 && state.fk < res.length)) state.fk = null;
+    var rows = $("tbody").children;
     res.forEach(function(c, i){
+      var m = tall ? c.mT : c.mA, reach = tall ? c.reachT : c.reach;
       $("c"+i+"-k").textContent = c.swap ? c.k + "\u2032" : c.k;
-      $("c"+i+"-depth").innerHTML = pairHTML(c.D, c.Dt);
+      $("c"+i+"-depth").textContent = fmt(tall ? c.Dt : c.D);
       $("c"+i+"-loss").textContent = fmt(c.loss);
-      $("c"+i+"-carry").innerHTML = pairHTML(c.cA, c.cT);
-      $("c"+i+"-req").innerHTML = pairHTML(c.reqA, c.reqT);
-      $("c"+i+"-margin").innerHTML = pairHTML(c.mA, c.mT, true);
-      $("c"+i+"-reach").innerHTML = '<span class="num">'+fmt(c.reach)+' cm</span><span class="reach">'+(isFinite(c.reach)?reachName(c.reach):"")+'</span>';
-      $("c"+i+"-lmmax").innerHTML = pairHTML(scan.rowA[i], scan.rowT[i], false, 1);
+      $("c"+i+"-carry").textContent = fmt(tall ? c.cT : c.cA);
+      $("c"+i+"-req").innerHTML = '<b>'+fmt(tall ? c.reqT : c.reqA)+'</b>';
+      $("c"+i+"-margin").innerHTML = '<span class="chip '+cls(m)+'">'+sgn(m)+'</span>';
+      $("c"+i+"-reach").innerHTML = '<span class="num">'+fmt(reach)+' cm</span><span class="reach">'+(isFinite(reach)?reachName(reach):"")+'</span>';
+      $("c"+i+"-lmmax").textContent = fmt(tall ? scan.rowT[i] : scan.rowA[i], 1);
+      if(rows[i]) rows[i].className = "row-" + cls(m) + (state.fk === i ? " row-sel" : "");
       var f = $("c"+i+"-fit");
       if(c.k===1) f.innerHTML = '<span class="chip na">'+T("outermost", "最外层")+'</span>';
       else if(c.fit===null) f.innerHTML = '<span class="chip na">'+T("verify", "待核实")+'</span>';
       else f.innerHTML = '<span class="chip '+(c.fit>=0?"ok":"bad")+'">'+(c.fit>=0?T("fits", "可套入"):T("too big", "套不进"))+' '+(c.fit>0?"+":"")+c.fit.toFixed(3)+'"</span>';
     });
     renderSummary(res, scan);
+    renderFormula(res);
     renderBars(res);
     save();
     listeners.forEach(function(fn){ try{ fn(state); }catch(e){} });
@@ -781,6 +857,30 @@ html[data-lang="zh"] .intro{line-height:1.9}
     set: function(o){ Object.keys(o).forEach(function(k){ state[k] = o[k]; }); renderParams(); update(); },
     onUpdate: function(fn){ listeners.push(fn); fn(state); }
   };
+
+  function renderFormula(res){
+    var box = $("fc-live"); if(!box) return;
+    var tall = state.view === "tall";
+    var idx = state.fk;
+    if(idx == null){
+      idx = 0;
+      res.forEach(function(c, i){ if((tall ? c.mT : c.mA) < (tall ? res[idx].mT : res[idx].mA)) idx = i; });
+    }
+    var c = res[idx], r = state.rows[idx];
+    if(!c || !r) { box.innerHTML = ""; return; }
+    var h = num(state.h)||0, sp = num(state.s)||0, lm = num(state.lm), g = num(state.g);
+    var D = tall ? c.Dt : c.D, cy = tall ? c.cT : c.cA, req = tall ? c.reqT : c.reqA, m = tall ? c.mT : c.mA;
+    var chips = res.map(function(x, i){
+      return '<button type="button" data-fk="'+i+'" aria-pressed="'+(i===idx)+'">k = '+x.k+(x.swap?"\u2032":"")+'</button>';
+    }).join("");
+    var robot = c.k+"×"+fmt(lm,1).replace(/\.0$/,"")+(c.gaps ? " + "+c.gaps+"×"+fmt(g,1).replace(/\.0$/,"") : "");
+    box.innerHTML =
+      '<div class="live-head"><span>'+T("Worked example from the table", "用表格里的数代入")+(tall ? T(" · tall / Type III", " · 高个子 / III 型弓") : T(" · average adult", " · 平均身材"))+'</span><div class="kchips" role="group" aria-label="Layer">'+chips+'</div></div>'+
+      '<div class="live-name"><b>k = '+c.k+(c.swap?"\u2032":"")+'</b> · '+escapeHTML(r.name)+' · '+T("target", "目标")+': '+escapeHTML(lmName(r.target))+'</div>'+
+      '<div class="live-eq"><span class="v">'+fmt(req)+'</span><span>=</span><span class="v t-body">'+fmt(D)+'</span><span>+</span><span class="v t-ext">'+fmt(h)+' + '+fmt(sp)+'</span><span>+</span><span class="v t-robot">'+robot+'</span><span>+</span><span class="v t-slack">'+fmt(cy)+'</span>'+
+      '<span class="res">'+T("cm required · device", "cm 所需 · 器械")+' '+fmt(c.L)+' cm → <span class="chip '+cls(m)+'">'+sgn(m)+' cm</span></span></div>';
+    box.querySelectorAll("[data-fk]").forEach(function(b){ b.addEventListener("click", function(){ state.fk = +b.getAttribute("data-fk"); update(); }); });
+  }
 
   function renderSummary(res, scan){
     var P = {lm:num(state.lm), g:num(state.g)};
@@ -839,7 +939,7 @@ html[data-lang="zh"] .intro{line-height:1.9}
     if(state.access!=="custom") state.depths = depthsFor(state.access);
     renderParams(); update();
   });
-  $("p-proc").addEventListener("change", function(e){ state.proc = e.target.value; state.rows = rowsFor(state.proc, state.preset); renderRows(); update(); });
+  $("p-proc").addEventListener("change", function(e){ state.proc = e.target.value; state.fk = null; state.rows = rowsFor(state.proc, state.preset); renderRows(); update(); });
   ["std","lab"].forEach(function(p){
     $("p-preset-"+p).addEventListener("click", function(){ state.preset = p; state.rows = rowsFor(state.proc, p); renderParams(); renderRows(); update(); });
   });
