@@ -128,6 +128,13 @@
           </span>
           <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>
         </a>
+        <a class="tutorial" id="tutorial-link-3" href="https://sazabi06.github.io/legobot-autonomy-survey/?lang=en">
+          <span>
+            <span class="tutorial-title"><span data-l="en">Autonomous neurovascular intervention: evidence, maturity and a roadmap for LegoBot</span><span data-l="zh" lang="zh-CN">自主神经介入：证据、成熟度与 LegoBot 路线图</span></span>
+            <span class="tutorial-description"><span data-l="en">A working survey of autonomous navigation for endovascular robots, where every claim traces to an evidence card.<br>14 figures, a problem–solution maturity matrix and a roadmap. Working notes, not peer reviewed.</span><span data-l="zh" lang="zh-CN">血管介入机器人自主导航的工作综述，每条结论都对应证据卡。<br>14 张图、问题–方案成熟度矩阵和路线图。工作笔记，未经同行评审。</span></span>
+          </span>
+          <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg>
+        </a>
       </section>
     </main>
     <footer>
@@ -147,6 +154,7 @@
         buttons.forEach(function (button) { button.setAttribute('aria-pressed', String(button.dataset.setLang === lang)); });
         tutorial.href = 'https://sazabi06.github.io/Interactive-Tutorial-PID-to-RL-for-Robot-Control/?lang=' + lang;
         document.getElementById('tutorial-link-2').href = 'https://sazabi06.github.io/catheter-length/?lang=' + lang;
+        document.getElementById('tutorial-link-3').href = 'https://sazabi06.github.io/legobot-autonomy-survey/?lang=' + lang;
         if (persist) {
           try { localStorage.setItem('weibo-home-lang', lang); } catch (_) {}
           var url = new URL(location.href);
